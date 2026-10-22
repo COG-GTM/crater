@@ -13,9 +13,12 @@ function laravelHotFile(): Plugin {
         apply: 'serve',
         configureServer(server) {
             server.httpServer?.once('listening', () => {
-                const { host, port, https } = server.config.server
-                const hostname = typeof host === 'string' ? host : 'localhost'
-                writeFileSync(hotFile, `${https ? 'https' : 'http'}://${hostname}:${port ?? 3000}`)
+                const address = server.httpServer?.address()
+                if (!address || typeof address === 'string') return
+                const { host, https } = server.config.server
+                const hostname =
+                    typeof host === 'string' && host !== '0.0.0.0' ? host : 'localhost'
+                writeFileSync(hotFile, `${https ? 'https' : 'http'}://${hostname}:${address.port}`)
             })
             process.on('exit', clean)
             process.on('SIGINT', () => process.exit())
