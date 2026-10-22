@@ -9,13 +9,13 @@ class CustomFieldValue extends Model
 {
     use HasFactory;
 
-    protected $dates = [
-        'date_answer',
-        'date_time_answer'
-    ];
-
     protected $guarded = [
         'id',
+    ];
+
+    protected $casts = [
+        'date_answer' => 'datetime',
+        'date_time_answer' => 'datetime',
     ];
 
     protected $appends = [
