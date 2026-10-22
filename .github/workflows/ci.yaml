@@ -8,27 +8,25 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        php: ['7.4', '8.0']
+        php: ['8.4']
 
     name: PHP ${{ matrix.php }}
 
     steps:
     - name: Checkout
-      uses: actions/checkout@v2
+      uses: actions/checkout@v4
 
     - name: Install dependencies
       uses: shivammathur/setup-php@v2
       with:
         php-version: ${{ matrix.php }}
-        extensions: exif
+        extensions: exif, gd, bcmath, zip, pdo_sqlite
 
-    - name: Install PHP 7 dependencies
-      run: composer update --no-interaction --no-progress
-      if: "matrix.php < 8"
+    - name: Require PHP 8.4.27 or newer
+      run: php -r 'exit(version_compare(PHP_VERSION, "8.4.27", ">=") ? 0 : 1);'
 
-    - name: Install PHP 8 dependencies
-      run: composer update --ignore-platform-req=php --no-interaction --no-progress
-      if: "matrix.php >= 8"
+    - name: Install PHP dependencies
+      run: composer install --no-interaction --no-progress
 
     - name: Check coding style
       run: ./vendor/bin/php-cs-fixer fix -v --dry-run --using-cache=no --config=.php-cs-fixer.dist.php

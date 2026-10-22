@@ -3,7 +3,7 @@
 namespace Crater\Models;
 
 use App;
-use Barryvdh\DomPDF\Facade as PDF;
+use Barryvdh\DomPDF\Facade\Pdf as PDF;
 use Carbon\Carbon;
 use Crater\Mail\SendEstimateMail;
 use Crater\Services\SerialNumberFormatter;
@@ -31,14 +31,6 @@ class Estimate extends Model implements HasMedia
     public const STATUS_ACCEPTED = 'ACCEPTED';
     public const STATUS_REJECTED = 'REJECTED';
 
-    protected $dates = [
-        'created_at',
-        'updated_at',
-        'deleted_at',
-        'estimate_date',
-        'expiry_date'
-    ];
-
     protected $appends = [
         'formattedExpiryDate',
         'formattedEstimateDate',
@@ -48,12 +40,17 @@ class Estimate extends Model implements HasMedia
     protected $guarded = ['id'];
 
     protected $casts = [
+        'created_at' => 'datetime',
+        'updated_at' => 'datetime',
+        'deleted_at' => 'datetime',
+        'estimate_date' => 'datetime',
+        'expiry_date' => 'datetime',
         'total' => 'integer',
         'tax' => 'integer',
         'sub_total' => 'integer',
         'discount' => 'float',
         'discount_val' => 'integer',
-        'exchange_rate' => 'float'
+        'exchange_rate' => 'float',
     ];
 
     public function getEstimatePdfUrlAttribute()

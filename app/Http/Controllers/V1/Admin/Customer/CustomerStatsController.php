@@ -35,7 +35,7 @@ class CustomerStatsController extends Controller
         $startDate = Carbon::now();
         $start = Carbon::now();
         $end = Carbon::now();
-        $terms = explode('-', $fiscalYear);
+        $terms = array_map('intval', explode('-', $fiscalYear));
 
         if ($terms[0] <= $start->month) {
             $startDate->month($terms[0])->startOfMonth();

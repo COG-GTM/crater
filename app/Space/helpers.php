@@ -194,3 +194,14 @@ function respondJson($error, $message)
         'message' => $message
     ], 422);
 }
+
+/**
+ * Get the public URL of a static asset bundled under public/build.
+ *
+ * @param string $path
+ * @return string
+ */
+function vite_asset(string $path): string
+{
+    return asset('build/'.ltrim($path, '/'));
+}

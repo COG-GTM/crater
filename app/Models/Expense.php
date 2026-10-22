@@ -16,10 +16,6 @@ class Expense extends Model implements HasMedia
     use InteractsWithMedia;
     use HasCustomFieldsTrait;
 
-    protected $dates = [
-        'expense_date',
-    ];
-
     protected $guarded = ['id'];
 
     protected $appends = [
@@ -30,8 +26,9 @@ class Expense extends Model implements HasMedia
     ];
 
     protected $casts = [
+        'expense_date' => 'datetime',
         'notes' => 'string',
-        'exchange_rate' => 'float'
+        'exchange_rate' => 'float',
     ];
 
     public function category()

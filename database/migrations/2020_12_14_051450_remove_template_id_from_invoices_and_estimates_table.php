@@ -24,9 +24,7 @@ class RemoveTemplateIdFromInvoicesAndEstimatesTable extends Migration
             });
 
             Schema::table('invoices', function (Blueprint $table) {
-                if (config('database.default') !== 'sqlite') {
-                    $table->dropForeign(['invoice_template_id']);
-                }
+                $table->dropForeign(['invoice_template_id']);
                 $table->dropColumn('invoice_template_id');
             });
         }
@@ -40,9 +38,7 @@ class RemoveTemplateIdFromInvoicesAndEstimatesTable extends Migration
             });
 
             Schema::table('estimates', function (Blueprint $table) {
-                if (config('database.default') !== 'sqlite') {
-                    $table->dropForeign(['estimate_template_id']);
-                }
+                $table->dropForeign(['estimate_template_id']);
                 $table->dropColumn('estimate_template_id');
             });
         }
