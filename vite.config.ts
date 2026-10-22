@@ -1,7 +1,10 @@
-import { defineConfig } from 'laravel-vite'
+import { defineConfig } from 'vite'
 import vue from '@vitejs/plugin-vue'
+import path from 'path'
 
-export default defineConfig({
+export default defineConfig(({ command }) => ({
+    base: command === 'build' ? '/build/' : '/',
+    publicDir: 'resources/static',
     server: {
         watch: {
             ignored: ['**/.env/**'],
@@ -9,9 +12,17 @@ export default defineConfig({
     },
     resolve: {
         alias: {
-            "vue-i18n": "vue-i18n/dist/vue-i18n.cjs.js"
-        }
-    }
-}).withPlugins(
-    vue
-)
+            '@': path.resolve(__dirname, 'resources'),
+            'vue-i18n': 'vue-i18n/dist/vue-i18n.cjs.js',
+        },
+    },
+    build: {
+        manifest: true,
+        outDir: 'public/build',
+        emptyOutDir: true,
+        rollupOptions: {
+            input: 'resources/scripts/main.js',
+        },
+    },
+    plugins: [vue()],
+}))

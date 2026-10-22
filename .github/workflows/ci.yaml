@@ -23,7 +23,9 @@ jobs:
         extensions: exif, gd, bcmath, zip, pdo_sqlite
 
     - name: Require PHP 8.4.27 or newer
-      run: php -r 'exit(version_compare(PHP_VERSION, "8.4.27", ">=") ? 0 : 1);'
+      run: |
+        php -v
+        php -r 'exit(version_compare(PHP_VERSION, "8.4.27", ">=") ? 0 : 1);'
 
     - name: Install PHP dependencies
       run: composer install --no-interaction --no-progress

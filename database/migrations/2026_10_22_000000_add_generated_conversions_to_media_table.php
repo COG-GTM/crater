@@ -44,6 +44,23 @@ class AddGeneratedConversionsToMediaTable extends Migration
      */
     public function down()
     {
+        DB::table('media')->orderBy('id')->chunkById(100, function ($rows) {
+            foreach ($rows as $row) {
+                $customProperties = json_decode($row->custom_properties ?? '[]', true) ?: [];
+                $generatedConversions = json_decode($row->generated_conversions ?? '[]', true) ?: [];
+
+                if ($generatedConversions === []) {
+                    continue;
+                }
+
+                $customProperties['generated_conversions'] = $generatedConversions;
+
+                DB::table('media')->where('id', $row->id)->update([
+                    'custom_properties' => json_encode((object) $customProperties),
+                ]);
+            }
+        });
+
         Schema::table('media', function (Blueprint $table) {
             $table->dropColumn('generated_conversions');
         });

@@ -48,15 +48,12 @@ RUN chmod -R 775 /var/log
 
 # Cleanup manually generated build files
 RUN rm -rf /var/www/public/build
-RUN npm config set user 0
-RUN npm config set unsafe-perm true
 # Frontend bulding
 RUN sed -i 's/DB_CONNECTION=mysql/DB_CONNECTION=sqlite/g' /var/www/.env
 RUN sed -i 's/DB_DATABASE=crater/DB_DATABASE=\/tmp\/crater.sqlite/g' /var/www/.env
 RUN touch /tmp/crater.sqlite
 RUN composer install --no-interaction --prefer-dist
 RUN npm i -f
-RUN npm install --save-dev sass
 RUN export NODE_OPTIONS="--max-old-space-size=4096" && /usr/bin/npx vite build --target=es2020
 RUN sed -i 's/DB_CONNECTION=sqlite/DB_CONNECTION=mysql/g' /var/www/.env
 RUN sed -i 's/DB_DATABASE=\/tmp\/crater.sqlite/DB_DATABASE=crater/g' /var/www/.env
