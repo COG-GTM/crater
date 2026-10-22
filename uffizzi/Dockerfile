@@ -48,8 +48,6 @@ RUN chmod -R 775 /var/log
 
 # Cleanup manually generated build files
 RUN rm -rf /var/www/public/build
-RUN npm config set user 0
-RUN npm config set unsafe-perm true
 # Frontend bulding
 RUN sed -i 's/DB_CONNECTION=mysql/DB_CONNECTION=sqlite/g' /var/www/.env
 RUN sed -i 's/DB_DATABASE=crater/DB_DATABASE=\/tmp\/crater.sqlite/g' /var/www/.env
