@@ -27,6 +27,8 @@ jobs:
 
     - name: Check coding style
       run: ./vendor/bin/php-cs-fixer fix -v --dry-run --using-cache=no --config=.php-cs-fixer.dist.php
+      env:
+        PHP_CS_FIXER_IGNORE_ENV: 1
 
     - name: Unit Tests
       run: php ./vendor/bin/pest
