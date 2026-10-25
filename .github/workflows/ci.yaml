@@ -8,7 +8,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        php: ['7.4', '8.0']
+        php: ['8.2', '8.3']
 
     name: PHP ${{ matrix.php }}
 
@@ -22,16 +22,14 @@ jobs:
         php-version: ${{ matrix.php }}
         extensions: exif
 
-    - name: Install PHP 7 dependencies
-      run: composer update --no-interaction --no-progress
-      if: "matrix.php < 8"
-
-    - name: Install PHP 8 dependencies
-      run: composer update --ignore-platform-req=php --no-interaction --no-progress
-      if: "matrix.php >= 8"
+    - name: Install dependencies
+      run: composer install --no-interaction --no-progress --prefer-dist
 
     - name: Check coding style
       run: ./vendor/bin/php-cs-fixer fix -v --dry-run --using-cache=no --config=.php-cs-fixer.dist.php
+      env:
+        PHP_CS_FIXER_IGNORE_ENV: 1
 
     - name: Unit Tests
+      if: always()
       run: php ./vendor/bin/pest
