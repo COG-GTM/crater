@@ -1,0 +1,14 @@
+== [base] crater-cron:baseline-8.0 (sha256:b473fed02db213461af99b11e566c292490ea05fc141dd915acb9ad88b275618)
+PHP 8.0.30 (cli) (built: Oct 21 2023 06:17:34) ( NTS )
+crond processes: 1
+* * * * * cd /var/www && php artisan schedule:run >> /dev/stdout 2>&1
+No scheduled commands are ready to run.
+| Yes  | 2022_03_06_070829_update_crater_version_606                             | 1     |
++------+-------------------------------------------------------------------------+-------+
+== [after] crater-cron:after-8.2 (sha256:f9fb25b44b4a977456b6e0617da6e4791f6ff8a81dc561b209d49e0382af8da1)
+PHP 8.2.35 (cli) (built: Oct 21 2026 22:54:10) (NTS)
+crond processes: 1
+* * * * * cd /var/www && php artisan schedule:run >> /dev/stdout 2>&1
+No scheduled commands are ready to run.
+| Yes  | 2022_03_06_070829_update_crater_version_606                             | 1     |
++------+-------------------------------------------------------------------------+-------+

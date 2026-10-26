@@ -1,0 +1,102 @@
+#0 building with "default" instance using docker driver
+
+#1 [internal] load build definition from Dockerfile
+#1 transferring dockerfile: 2.01kB done
+#1 DONE 0.0s
+
+#2 [internal] load metadata for docker.io/library/php:8.2.35-fpm
+#2 ...
+
+#3 [internal] load metadata for docker.io/library/composer:latest
+#3 DONE 0.7s
+
+#2 [internal] load metadata for docker.io/library/php:8.2.35-fpm
+#2 DONE 0.8s
+
+#4 [internal] load .dockerignore
+#4 transferring context: 140B done
+#4 DONE 0.0s
+
+#5 [stage-0  1/28] FROM docker.io/library/php:8.2.35-fpm@sha256:77900c43ba8b8f2f61c73bcf68afbfb1b72a349052472e7640d402ef998754b3
+#5 resolve docker.io/library/php:8.2.35-fpm@sha256:77900c43ba8b8f2f61c73bcf68afbfb1b72a349052472e7640d402ef998754b3 done
+#5 DONE 0.0s
+
+#6 FROM docker.io/library/composer:latest@sha256:b6dcd72ca98fa19d0e5b8476de179859704891fad06dd9e0b96833d4c430a5fc
+#6 resolve docker.io/library/composer:latest@sha256:b6dcd72ca98fa19d0e5b8476de179859704891fad06dd9e0b96833d4c430a5fc 0.0s done
+#6 DONE 0.0s
+
+#7 [internal] load build context
+#7 transferring context: 108.11kB 0.0s done
+#7 DONE 0.0s
+
+#8 [stage-0  3/28] RUN apt-get clean && rm -rf /var/lib/apt/lists/*
+#8 CACHED
+
+#9 [stage-0  4/28] RUN pecl install imagick     && docker-php-ext-enable imagick
+#9 CACHED
+
+#10 [stage-0  5/28] RUN docker-php-ext-install pdo_mysql mbstring zip exif pcntl bcmath gd
+#10 CACHED
+
+#11 [stage-0  6/28] COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
+#11 CACHED
+
+#12 [stage-0  7/28] RUN useradd -G www-data,root -u 1000 -d /home/crater-user crater-user
+#12 CACHED
+
+#13 [stage-0  2/28] RUN apt-get update && apt-get install -y     git     curl     libpng-dev     libonig-dev     libxml2-dev     zip     unzip     libzip-dev     libmagickwand-dev     mariadb-client     npm
+#13 CACHED
+
+#14 [stage-0  8/28] RUN mkdir -p /home/crater-user/.composer &&     chown -R crater-user:crater-user /home/crater-user
+#14 CACHED
+
+#15 [stage-0  9/28] COPY ./ /var/www
+#15 DONE 0.5s
+
+#16 [stage-0 10/28] COPY ./docker-compose/php/uploads.ini /usr/local/etc/php/conf.d/uploads.ini
+#16 DONE 0.0s
+
+#17 [stage-0 11/28] COPY ./uffizzi/.env.example /var/www/.env
+#17 DONE 0.0s
+
+#18 [stage-0 12/28] WORKDIR /var/www
+#18 DONE 0.0s
+
+#19 [stage-0 13/28] RUN chown -R crater-user:crater-user ./
+#19 DONE 0.8s
+
+#20 [stage-0 14/28] RUN chmod -R 775 composer.json composer.lock         composer.lock storage/framework/         storage/logs/ bootstrap/cache/ /home/crater-user/.composer
+#20 DONE 0.2s
+
+#21 [stage-0 15/28] RUN chown -R $(whoami):$(whoami) /var/log/
+#21 DONE 0.1s
+
+#22 [stage-0 16/28] RUN chmod -R 775 /var/log
+#22 DONE 0.1s
+
+#23 [stage-0 17/28] RUN rm -rf /var/www/public/build
+#23 DONE 0.1s
+
+#24 [stage-0 18/28] RUN npm config set user 0
+#24 0.405 npm ERR! `user` is not a valid npm option
+#24 0.407 
+#24 0.407 npm ERR! A complete log of this run can be found in:
+#24 0.407 npm ERR!     /root/.npm/_logs/2026-10-26T15_07_49_748Z-debug-0.log
+#24 ERROR: process "/bin/sh -c npm config set user 0" did not complete successfully: exit code: 1
+------
+ > [stage-0 18/28] RUN npm config set user 0:
+0.405 npm ERR! `user` is not a valid npm option
+0.407 
+0.407 npm ERR! A complete log of this run can be found in:
+0.407 npm ERR!     /root/.npm/_logs/2026-10-26T15_07_49_748Z-debug-0.log
+------
+Dockerfile:51
+--------------------
+  49 |     # Cleanup manually generated build files
+  50 |     RUN rm -rf /var/www/public/build
+  51 | >>> RUN npm config set user 0
+  52 |     RUN npm config set unsafe-perm true
+  53 |     # Frontend bulding
+--------------------
+ERROR: failed to build: failed to solve: process "/bin/sh -c npm config set user 0" did not complete successfully: exit code: 1
+uapp=1

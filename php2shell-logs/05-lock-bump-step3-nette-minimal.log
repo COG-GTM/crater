@@ -1,0 +1,20 @@
+Loading composer repositories with package information
+Updating dependencies
+Lock file operations: 0 installs, 2 updates, 0 removals
+  - Downgrading nette/schema (v1.4.0 => v1.2.5)
+  - Downgrading nette/utils (v4.1.6 => v3.2.10)
+Writing lock file
+Installing dependencies from lock file (including require-dev)
+Package operations: 0 installs, 2 updates, 0 removals
+  - Downgrading nette/utils (v4.1.6 => v3.2.10): Extracting archive
+  - Downgrading nette/schema (v1.4.0 => v1.2.5): Extracting archive
+Package swiftmailer/swiftmailer is abandoned, you should avoid using it. Use symfony/mailer instead.
+Generating optimized autoload files
+> Illuminate\Foundation\ComposerScripts::postAutoloadDump
+> @php artisan package:discover --ansi
+[32mPackage manifest generated successfully.[39m
+109 packages you are using are looking for funding.
+Use the `composer fund` command to find out more!
+Found 74 security vulnerability advisories affecting 19 packages.
+Run "composer audit" for a full list of advisories.
+UPDATE_EXIT=0

@@ -1,0 +1,40 @@
+#!/bin/bash
+# usage: smoke.sh <label> <app-image> <src-dir> <port>
+set -u
+L=$1 IMG=$2 SRC=$3 PORT=$4 NET=smoke-$1
+docker rm -f $L-db $L-app $L-nginx >/dev/null 2>&1; docker network rm $NET >/dev/null 2>&1
+docker network create $NET >/dev/null
+docker run -d --name $L-db --network $NET --network-alias db -e MYSQL_USER=crater -e MYSQL_PASSWORD=crater -e MYSQL_DATABASE=crater -e MYSQL_ROOT_PASSWORD=crater mariadb >/dev/null
+docker run -d --name $L-app --network $NET --network-alias app -u 1000 -w /var/www \
+  -e DB_HOST=db -e DB_CONNECTION=mysql -e DB_DATABASE=crater -e DB_USERNAME=crater -e DB_PASSWORD=crater \
+  -e APP_URL=http://localhost:$PORT -e SANCTUM_STATEFUL_DOMAINS=localhost:$PORT -e SESSION_DOMAIN=localhost -e APP_ENV=production \
+  -v $SRC:/var/www -v $SRC/docker-compose/php/uploads.ini:/usr/local/etc/php/conf.d/uploads.ini:ro $IMG php-fpm >/dev/null
+docker run -d --name $L-nginx --network $NET -p $PORT:80 -v $SRC:/var/www -v $SRC/docker-compose/nginx:/etc/nginx/conf.d/ nginx:1.17-alpine >/dev/null
+for i in $(seq 1 60); do docker exec $L-db mariadb -ucrater -pcrater -e 'select 1' crater >/dev/null 2>&1 && break; sleep 2; done
+X="docker exec $L-app"
+echo "== image: $IMG ($(docker image inspect $IMG --format '{{.Id}}'))"
+$X php -v | head -1; $X php-fpm -v | head -1
+echo "== FPM effective ini (via conf.d mount)"; $X php -r 'foreach (["session.upload_progress.enabled","post_max_size","upload_max_filesize","display_errors"] as $k) echo "$k=".var_export(ini_get($k),true)."\n";'
+echo "== migrate --seed"; $X php artisan migrate:fresh --seed --force 2>&1 | tail -3
+$X php artisan storage:link >/dev/null 2>&1; $X touch storage/app/database_created
+docker exec $L-db mariadb -ucrater -pcrater crater -e "update settings set value='COMPLETED' where option='profile_complete'; select option,value from settings where option='profile_complete';"
+$X php artisan config:clear >/dev/null 2>&1
+echo "== HTTP checks"
+J=/tmp/$L.cookies; rm -f $J
+for p in / /login /api/v1/app/version /installation; do
+  printf '%-28s ' "GET $p"; curl -s -o /tmp/$L.body -D /tmp/$L.hdr -w '%{http_code} %{size_download}B' -c $J -b $J http://localhost:$PORT$p; echo " deprec_in_body=$(grep -ci -E 'deprecated|fatal error|warning:' /tmp/$L.body)"
+done
+echo "== login API (admin@craterapp.com) + authenticated bootstrap"
+curl -s -c $J -b $J http://localhost:$PORT/sanctum/csrf-cookie -o /dev/null
+XSRF=$(grep XSRF-TOKEN $J | awk '{print $7}' | python3 -c 'import sys,urllib.parse;print(urllib.parse.unquote(sys.stdin.read().strip()))')
+curl -s -c $J -b $J -o /tmp/$L.login -w 'POST /login -> %{http_code}\n' -H "X-XSRF-TOKEN: $XSRF" -H 'Accept: application/json' -H "Referer: http://localhost:$PORT" -H 'Content-Type: application/json' \
+  -d '{"email":"admin@craterapp.com","password":"crater@123","remember":false}' http://localhost:$PORT/login
+for p in /api/v1/bootstrap /api/v1/customers /api/v1/invoices /api/v1/dashboard; do
+  printf '%-28s ' "GET $p"; curl -s -o /tmp/$L.body -w '%{http_code} %{size_download}B' -c $J -b $J -H 'Accept: application/json' -H "Referer: http://localhost:$PORT" -H 'company: 1' http://localhost:$PORT$p
+  echo " json_ok=$(python3 -c 'import json,sys;json.load(open(sys.argv[1]));print(1)' /tmp/$L.body 2>/dev/null || echo 0) deprec_in_body=$(grep -ci -E 'deprecated|fatal error|warning:' /tmp/$L.body)"
+done
+echo "== PDF render (invoice 1)"; printf 'GET /invoices/pdf/<hash> '; H=$(docker exec $L-db mariadb -N -ucrater -pcrater crater -e "select unique_hash from invoices limit 1"); [ -n "$H" ] && curl -s -o /tmp/$L.pdf -w '%{http_code} %{content_type}\n' -b $J http://localhost:$PORT/invoices/pdf/$H || echo "(no seeded invoice)"
+echo "== schedule:run (cron entrypoint path)"; $X php artisan schedule:run 2>&1 | tail -3
+echo "== laravel.log fatals/deprecations"; $X sh -c 'grep -ciE "deprecat|fatal|production.ERROR" storage/logs/laravel.log 2>/dev/null || echo 0'
+echo "== php-fpm container log"; docker logs $L-app 2>&1 | tail -8
+echo "== nginx error log"; docker exec $L-nginx sh -c 'tail -5 /var/log/nginx/error.log' 2>&1

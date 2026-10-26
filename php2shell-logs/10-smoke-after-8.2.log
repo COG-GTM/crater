@@ -1,0 +1,41 @@
+== image: crater-php:after-8.2 (sha256:87f609c4ed71bac29830eac6b243320dc49ebce120275184a2d2ecf1869ebe74)
+PHP 8.2.35 (cli) (built: Oct 21 2026 16:03:01) (NTS)
+PHP 8.2.35 (fpm-fcgi) (built: Oct 21 2026 16:03:03)
+== FPM effective ini (via conf.d mount)
+session.upload_progress.enabled=''
+post_max_size='64M'
+upload_max_filesize='64M'
+display_errors='1'
+== migrate --seed
+Seeding: Database\Seeders\UsersTableSeeder
+Seeded:  Database\Seeders\UsersTableSeeder (151.51ms)
+Database seeding completed successfully.
+option	value
+profile_complete	COMPLETED
+== HTTP checks
+GET /                        200 1408B deprec_in_body=0
+GET /login                   200 1408B deprec_in_body=0
+GET /api/v1/app/version      200 19B deprec_in_body=0
+GET /installation            302 354B deprec_in_body=0
+== login API (admin@craterapp.com) + authenticated bootstrap
+POST /login -> 204
+GET /api/v1/bootstrap        200 66526B json_ok=1 deprec_in_body=0
+GET /api/v1/customers        200 533B json_ok=1 deprec_in_body=0
+GET /api/v1/invoices         200 528B json_ok=1 deprec_in_body=0
+GET /api/v1/dashboard        200 491B json_ok=1 deprec_in_body=0
+== PDF render (invoice 1)
+GET /invoices/pdf/<hash> (no seeded invoice)
+== schedule:run (cron entrypoint path)
+No scheduled commands are ready to run.
+== laravel.log fatals/deprecations
+0
+== php-fpm container log
+172.20.0.4 -  26/Oct/2026:14:57:58 +0000 "GET /index.php" 200
+172.20.0.4 -  26/Oct/2026:14:57:58 +0000 "GET /index.php" 302
+172.20.0.4 -  26/Oct/2026:14:57:58 +0000 "GET /index.php" 204
+172.20.0.4 -  26/Oct/2026:14:57:58 +0000 "POST /index.php" 204
+172.20.0.4 -  26/Oct/2026:14:57:58 +0000 "GET /index.php" 200
+172.20.0.4 -  26/Oct/2026:14:57:58 +0000 "GET /index.php" 200
+172.20.0.4 -  26/Oct/2026:14:57:59 +0000 "GET /index.php" 200
+172.20.0.4 -  26/Oct/2026:14:57:59 +0000 "GET /index.php" 200
+== nginx error log

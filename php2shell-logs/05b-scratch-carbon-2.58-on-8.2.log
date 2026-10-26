@@ -1,0 +1,6 @@
+    - laravel/framework v8.83.16 requires nesbot/carbon ^2.53.1 -> found nesbot/carbon[2.53.1, ..., 2.x-dev] but these were not loaded, because they are affected by security advisories ("PKSA-csyb-yc4p-mnbs"). Go to https://packagist.org/security-advisories/ to find advisory details. To ignore the advisories, add their IDs to the "policy.advisories.ignore-id" config or add the package to "policy.advisories.ignore". To turn the feature off entirely, you can set "policy.advisories.block" to false.
+    - laravel/framework v8.83.16 requires nesbot/carbon ^2.53.1 -> found nesbot/carbon[2.53.1, ..., 2.x-dev] but these were not loaded, because they are affected by security advisories ("PKSA-csyb-yc4p-mnbs"). Go to https://packagist.org/security-advisories/ to find advisory details. To ignore the advisories, add their IDs to the "policy.advisories.ignore-id" config or add the package to "policy.advisories.ignore". To turn the feature off entirely, you can set "policy.advisories.block" to false.
+Stack trace:
+#0 {main}
+  thrown in /var/www/artisan on line 18
+sh: 1: vendor/bin/pest: not found

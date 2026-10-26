@@ -1,0 +1,2316 @@
+Rector 2.8.1
+
+76 files with changes
+=====================
+
+1) app/Models/Item.php:33
+
+    ---------- begin diff ----------
+@@ Line 33 @@
+
+     public function creator()
+     {
+-        return $this->belongsTo('Crater\Models\User', 'creator_id');
++        return $this->belongsTo(\Crater\Models\User::class, 'creator_id');
+     }
+
+     public function currency()
+@@ Line 87 @@
+         }
+
+         if ($filters->get('orderByField') || $filters->get('orderBy')) {
+-            $field = $filters->get('orderByField') ? $filters->get('orderByField') : 'name';
+-            $orderBy = $filters->get('orderBy') ? $filters->get('orderBy') : 'asc';
++            $field = $filters->get('orderByField') ?: 'name';
++            $orderBy = $filters->get('orderBy') ?: 'asc';
+             $query->whereOrder($field, $orderBy);
+         }
+     }
+    ----------- end diff -----------
+
+Applied rules:
+ * TernaryToElvisRector
+ * StringClassNameToClassConstantRector
+
+
+2) app/Http/Resources/InvoiceResource.php:56
+
+    ---------- begin diff ----------
+@@ Line 56 @@
+             'sales_tax_type' => $this->sales_tax_type,
+             'sales_tax_address_type' => $this->sales_tax_address_type,
+             'overdue' => $this->overdue,
+-            'items' => $this->when($this->items()->exists(), function () {
+-                return InvoiceItemResource::collection($this->items);
+-            }),
+-            'customer' => $this->when($this->customer()->exists(), function () {
+-                return new CustomerResource($this->customer);
+-            }),
+-            'creator' => $this->when($this->creator()->exists(), function () {
+-                return new UserResource($this->creator);
+-            }),
+-            'taxes' => $this->when($this->taxes()->exists(), function () {
+-                return TaxResource::collection($this->taxes);
+-            }),
+-            'fields' => $this->when($this->fields()->exists(), function () {
+-                return CustomFieldValueResource::collection($this->fields);
+-            }),
+-            'company' => $this->when($this->company()->exists(), function () {
+-                return new CompanyResource($this->company);
+-            }),
+-            'currency' => $this->when($this->currency()->exists(), function () {
+-                return new CurrencyResource($this->currency);
+-            }),
++            'items' => $this->when($this->items()->exists(), fn() => InvoiceItemResource::collection($this->items)),
++            'customer' => $this->when($this->customer()->exists(), fn() => new CustomerResource($this->customer)),
++            'creator' => $this->when($this->creator()->exists(), fn() => new UserResource($this->creator)),
++            'taxes' => $this->when($this->taxes()->exists(), fn() => TaxResource::collection($this->taxes)),
++            'fields' => $this->when($this->fields()->exists(), fn() => CustomFieldValueResource::collection($this->fields)),
++            'company' => $this->when($this->company()->exists(), fn() => new CompanyResource($this->company)),
++            'currency' => $this->when($this->currency()->exists(), fn() => new CurrencyResource($this->currency)),
+         ];
+     }
+ }
+    ----------- end diff -----------
+
+Applied rules:
+ * ClosureToArrowFunctionRector
+
+
+3) app/Http/Resources/RecurringInvoiceResource.php:45
+
+    ---------- begin diff ----------
+@@ Line 45 @@
+             'template_name' => $this->template_name,
+             'sales_tax_type' => $this->sales_tax_type,
+             'sales_tax_address_type' => $this->sales_tax_address_type,
+-            'fields' => $this->when($this->fields()->exists(), function () {
+-                return CustomFieldValueResource::collection($this->fields);
+-            }),
+-            'items' => $this->when($this->items()->exists(), function () {
+-                return InvoiceItemResource::collection($this->items);
+-            }),
+-            'customer' => $this->when($this->customer()->exists(), function () {
+-                return new CustomerResource($this->customer);
+-            }),
+-            'company' => $this->when($this->company()->exists(), function () {
+-                return new CompanyResource($this->company);
+-            }),
+-            'invoices' => $this->when($this->invoices()->exists(), function () {
+-                return InvoiceResource::collection($this->invoices);
+-            }),
+-            'taxes' => $this->when($this->taxes()->exists(), function () {
+-                return TaxResource::collection($this->taxes);
+-            }),
+-            'creator' => $this->when($this->creator()->exists(), function () {
+-                return new UserResource($this->creator);
+-            }),
+-            'currency' => $this->when($this->currency()->exists(), function () {
+-                return new CurrencyResource($this->currency);
+-            }),
++            'fields' => $this->when($this->fields()->exists(), fn() => CustomFieldValueResource::collection($this->fields)),
++            'items' => $this->when($this->items()->exists(), fn() => InvoiceItemResource::collection($this->items)),
++            'customer' => $this->when($this->customer()->exists(), fn() => new CustomerResource($this->customer)),
++            'company' => $this->when($this->company()->exists(), fn() => new CompanyResource($this->company)),
++            'invoices' => $this->when($this->invoices()->exists(), fn() => InvoiceResource::collection($this->invoices)),
++            'taxes' => $this->when($this->taxes()->exists(), fn() => TaxResource::collection($this->taxes)),
++            'creator' => $this->when($this->creator()->exists(), fn() => new UserResource($this->creator)),
++            'currency' => $this->when($this->currency()->exists(), fn() => new CurrencyResource($this->currency)),
+         ];
+     }
+ }
+    ----------- end diff -----------
+
+Applied rules:
+ * ClosureToArrowFunctionRector
+
+
+4) database/factories/InvoiceItemFactory.php:26
+
+    ---------- begin diff ----------
+@@ Line 26 @@
+     {
+         return [
+             'item_id' => Item::factory(),
+-            'name' => function (array $item) {
+-                return Item::find($item['item_id'])->name;
+-            },
+-            'description' => function (array $item) {
+-                return Item::find($item['item_id'])->description;
+-            },
+-            'price' => function (array $item) {
+-                return Item::find($item['item_id'])->price;
+-            },
++            'name' => fn(array $item) => Item::find($item['item_id'])->name,
++            'description' => fn(array $item) => Item::find($item['item_id'])->description,
++            'price' => fn(array $item) => Item::find($item['item_id'])->price,
+             'company_id' => User::find(1)->companies()->first()->id,
+             'quantity' => $this->faker->randomDigitNotNull,
+-            'total' => function (array $item) {
+-                return ($item['price'] * $item['quantity']);
+-            },
++            'total' => fn(array $item) => $item['price'] * $item['quantity'],
+             'discount_type' => $this->faker->randomElement(['percentage', 'fixed']),
+-            'discount_val' => function (array $invoice) {
+-                return $invoice['discount_type'] == 'percentage' ? $this->faker->numberBetween($min = 0, $max = 100) : $this->faker->randomDigitNotNull;
+-            },
+-            'discount' => function (array $invoice) {
+-                return $invoice['discount_type'] == 'percentage' ? (($invoice['discount_val'] * $invoice['total']) / 100) : $invoice['discount_val'];
+-            },
++            'discount_val' => fn(array $invoice) => $invoice['discount_type'] == 'percentage' ? $this->faker->numberBetween($min = 0, $max = 100) : $this->faker->randomDigitNotNull,
++            'discount' => fn(array $invoice) => $invoice['discount_type'] == 'percentage' ? (($invoice['discount_val'] * $invoice['total']) / 100) : $invoice['discount_val'],
+             'tax' => $this->faker->randomDigitNotNull,
+             'recurring_invoice_id' => RecurringInvoice::factory(),
+             'exchange_rate' => $this->faker->randomDigitNotNull,
+    ----------- end diff -----------
+
+Applied rules:
+ * ClosureToArrowFunctionRector
+
+
+5) app/Http/Resources/UserResource.php:34
+
+    ---------- begin diff ----------
+@@ Line 34 @@
+             'is_owner' => $this->isOwner(),
+             'roles' => $this->roles,
+             'formatted_created_at' => $this->formattedCreatedAt,
+-            'currency' => $this->when($this->currency()->exists(), function () {
+-                return new CurrencyResource($this->currency);
+-            }),
+-            'companies' => $this->when($this->companies()->exists(), function () {
+-                return CompanyResource::collection($this->companies);
+-            })
++            'currency' => $this->when($this->currency()->exists(), fn() => new CurrencyResource($this->currency)),
++            'companies' => $this->when($this->companies()->exists(), fn() => CompanyResource::collection($this->companies))
+         ];
+     }
+ }
+    ----------- end diff -----------
+
+Applied rules:
+ * ClosureToArrowFunctionRector
+
+
+6) app/Http/Resources/Customer/CustomFieldValueResource.php:28
+
+    ---------- begin diff ----------
+@@ Line 28 @@
+             'custom_field_id' => $this->custom_field_id,
+             'company_id' => $this->company_id,
+             'default_answer' => $this->defaultAnswer,
+-            'custom_field' => $this->when($this->customField()->exists(), function () {
+-                return new CustomFieldResource($this->customField);
+-            }),
+-            'company' => $this->when($this->company()->exists(), function () {
+-                return new CompanyResource($this->company);
+-            }),
++            'custom_field' => $this->when($this->customField()->exists(), fn() => new CustomFieldResource($this->customField)),
++            'company' => $this->when($this->company()->exists(), fn() => new CompanyResource($this->company)),
+         ];
+     }
+ }
+    ----------- end diff -----------
+
+Applied rules:
+ * ClosureToArrowFunctionRector
+
+
+7) app/Http/Resources/Customer/AddressResource.php:29
+
+    ---------- begin diff ----------
+@@ Line 29 @@
+             'user_id' => $this->user_id,
+             'company_id' => $this->company_id,
+             'customer_id' => $this->customer_id,
+-            'country' => $this->when($this->country()->exists(), function () {
+-                return new CountryResource($this->country);
+-            }),
+-            'user' => $this->when($this->user()->exists(), function () {
+-                return new UserResource($this->user);
+-            }),
++            'country' => $this->when($this->country()->exists(), fn() => new CountryResource($this->country)),
++            'user' => $this->when($this->user()->exists(), fn() => new UserResource($this->user)),
+         ];
+     }
+ }
+    ----------- end diff -----------
+
+Applied rules:
+ * ClosureToArrowFunctionRector
+
+
+8) database/factories/EmailLogFactory.php:30
+
+    ---------- begin diff ----------
+@@ Line 30 @@
+             'subject' => $this->faker->sentence,
+             'body' => $this->faker->text,
+             'mailable_type' => $this->faker->randomElement([Invoice::class, Estimate::class, Payment::class]),
+-            'mailable_id' => function (array $log) {
+-                return $log['mailable_type']::factory();
+-            },
++            'mailable_id' => fn(array $log) => $log['mailable_type']::factory(),
+         ];
+     }
+ }
+    ----------- end diff -----------
+
+Applied rules:
+ * ClosureToArrowFunctionRector
+
+
+9) app/Http/Resources/Customer/TaxTypeResource.php:22
+
+    ---------- begin diff ----------
+@@ Line 22 @@
+             'collective_tax' => $this->collective_tax,
+             'description' => $this->description,
+             'company_id' => $this->company_id,
+-            'company' => $this->when($this->company()->exists(), function () {
+-                return new CompanyResource($this->company);
+-            }),
++            'company' => $this->when($this->company()->exists(), fn() => new CompanyResource($this->company)),
+         ];
+     }
+ }
+    ----------- end diff -----------
+
+Applied rules:
+ * ClosureToArrowFunctionRector
+
+
+10) app/Http/Resources/ExpenseCategoryResource.php:21
+
+    ---------- begin diff ----------
+@@ Line 21 @@
+             'company_id' => $this->company_id,
+             'amount' => $this->amount,
+             'formatted_created_at' => $this->formattedCreatedAt,
+-            'company' => $this->when($this->company()->exists(), function () {
+-                return new CompanyResource($this->company);
+-            }),
++            'company' => $this->when($this->company()->exists(), fn() => new CompanyResource($this->company)),
+         ];
+     }
+ }
+    ----------- end diff -----------
+
+Applied rules:
+ * ClosureToArrowFunctionRector
+
+
+11) app/Models/Customer.php:333
+
+    ---------- begin diff ----------
+@@ Line 333 @@
+         }
+
+         if ($filters->get('orderByField') || $filters->get('orderBy')) {
+-            $field = $filters->get('orderByField') ? $filters->get('orderByField') : 'name';
+-            $orderBy = $filters->get('orderBy') ? $filters->get('orderBy') : 'asc';
++            $field = $filters->get('orderByField') ?: 'name';
++            $orderBy = $filters->get('orderBy') ?: 'asc';
+             $query->whereOrder($field, $orderBy);
+         }
+     }
+    ----------- end diff -----------
+
+Applied rules:
+ * TernaryToElvisRector
+
+
+12) app/Services/SerialNumberFormatter.php:108
+
+    ---------- begin diff ----------
+@@ Line 108 @@
+
+     public function setNextNumbers()
+     {
+-        $this->nextSequenceNumber ?
+-            $this->nextSequenceNumber : $this->setNextSequenceNumber();
++        $this->nextSequenceNumber ?: $this->setNextSequenceNumber();
+
+-        $this->nextCustomerSequenceNumber ?
+-            $this->nextCustomerSequenceNumber : $this->setNextCustomerSequenceNumber();
++        $this->nextCustomerSequenceNumber ?: $this->setNextCustomerSequenceNumber();
+
+         return $this;
+     }
+@@ Line 199 @@
+
+             switch ($name) {
+                     case "SEQUENCE":
+-                        $value = $value ? $value : 6;
++                        $value = $value ?: 6;
+                         $serialNumber .= str_pad($this->nextSequenceNumber, $value, 0, STR_PAD_LEFT);
+
+                         break;
+                     case "DATE_FORMAT":
+-                        $value = $value ? $value : 'Y';
++                        $value = $value ?: 'Y';
+                         $serialNumber .= date($value);
+
+                         break;
+                     case "RANDOM_SEQUENCE":
+-                        $value = $value ? $value : 6;
++                        $value = $value ?: 6;
+                         $serialNumber .= substr(bin2hex(random_bytes($value)), 0, $value);
+
+                         break;
+    ----------- end diff -----------
+
+Applied rules:
+ * TernaryToElvisRector
+
+
+13) app/Http/Resources/Customer/PaymentResource.php:32
+
+    ---------- begin diff ----------
+@@ Line 32 @@
+             'formatted_created_at' => $this->formattedCreatedAt,
+             'formatted_payment_date' => $this->formattedPaymentDate,
+             'payment_pdf_url' => $this->paymentPdfUrl,
+-            'customer' => $this->when($this->customer()->exists(), function () {
+-                return new CustomerResource($this->customer);
+-            }),
+-            'invoice' => $this->when($this->invoice()->exists(), function () {
+-                return new InvoiceResource($this->invoice);
+-            }),
+-            'payment_method' => $this->when($this->paymentMethod()->exists(), function () {
+-                return new PaymentMethodResource($this->paymentMethod);
+-            }),
+-            'fields' => $this->when($this->fields()->exists(), function () {
+-                return CustomFieldValueResource::collection($this->fields);
+-            }),
+-            'company' => $this->when($this->company()->exists(), function () {
+-                return new CompanyResource($this->company);
+-            }),
+-            'currency' => $this->when($this->currency()->exists(), function () {
+-                return new CurrencyResource($this->currency);
+-            }),
+-            'transaction' => $this->when($this->transaction()->exists(), function () {
+-                return new TransactionResource($this->transaction);
+-            }),
++            'customer' => $this->when($this->customer()->exists(), fn() => new CustomerResource($this->customer)),
++            'invoice' => $this->when($this->invoice()->exists(), fn() => new InvoiceResource($this->invoice)),
++            'payment_method' => $this->when($this->paymentMethod()->exists(), fn() => new PaymentMethodResource($this->paymentMethod)),
++            'fields' => $this->when($this->fields()->exists(), fn() => CustomFieldValueResource::collection($this->fields)),
++            'company' => $this->when($this->company()->exists(), fn() => new CompanyResource($this->company)),
++            'currency' => $this->when($this->currency()->exists(), fn() => new CurrencyResource($this->currency)),
++            'transaction' => $this->when($this->transaction()->exists(), fn() => new TransactionResource($this->transaction)),
+         ];
+     }
+ }
+    ----------- end diff -----------
+
+Applied rules:
+ * ClosureToArrowFunctionRector
+
+
+14) database/factories/EstimateItemFactory.php:26
+
+    ---------- begin diff ----------
+@@ Line 26 @@
+     {
+         return [
+             'item_id' => Item::factory(),
+-            'name' => function (array $item) {
+-                return Item::find($item['item_id'])->name;
+-            },
+-            'description' => function (array $item) {
+-                return Item::find($item['item_id'])->description;
+-            },
+-            'price' => function (array $item) {
+-                return Item::find($item['item_id'])->price;
+-            },
++            'name' => fn(array $item) => Item::find($item['item_id'])->name,
++            'description' => fn(array $item) => Item::find($item['item_id'])->description,
++            'price' => fn(array $item) => Item::find($item['item_id'])->price,
+             'estimate_id' => Estimate::factory(),
+             'quantity' => $this->faker->randomDigitNotNull,
+             'company_id' => User::find(1)->companies()->first()->id,
+             'tax' => $this->faker->randomDigitNotNull,
+-            'total' => function (array $item) {
+-                return ($item['price'] * $item['quantity']);
+-            },
++            'total' => fn(array $item) => $item['price'] * $item['quantity'],
+             'discount_type' => $this->faker->randomElement(['percentage', 'fixed']),
+-            'discount_val' => function (array $estimate) {
+-                return $estimate['discount_type'] == 'percentage' ? $this->faker->numberBetween($min = 0, $max = 100) : $this->faker->randomDigitNotNull;
+-            },
+-            'discount' => function (array $estimate) {
+-                return $estimate['discount_type'] == 'percentage' ? (($estimate['discount_val'] * $estimate['total']) / 100) : $estimate['discount_val'];
+-            },
++            'discount_val' => fn(array $estimate) => $estimate['discount_type'] == 'percentage' ? $this->faker->numberBetween($min = 0, $max = 100) : $this->faker->randomDigitNotNull,
++            'discount' => fn(array $estimate) => $estimate['discount_type'] == 'percentage' ? (($estimate['discount_val'] * $estimate['total']) / 100) : $estimate['discount_val'],
+             'exchange_rate' => $this->faker->randomDigitNotNull,
+             'base_discount_val' => $this->faker->randomDigitNotNull,
+             'base_price' => $this->faker->randomDigitNotNull,
+    ----------- end diff -----------
+
+Applied rules:
+ * ClosureToArrowFunctionRector
+
+
+15) app/Http/Resources/Customer/CustomerResource.php:31
+
+    ---------- begin diff ----------
+@@ Line 31 @@
+             'formatted_created_at' => $this->formattedCreatedAt,
+             'avatar' => $this->avatar,
+             'prefix' => $this->prefix,
+-            'billing' => $this->when($this->billingAddress()->exists(), function () {
+-                return new AddressResource($this->billingAddress);
+-            }),
+-            'shipping' => $this->when($this->shippingAddress()->exists(), function () {
+-                return new AddressResource($this->shippingAddress);
+-            }),
+-            'fields' => $this->when($this->fields()->exists(), function () {
+-                return CustomFieldValueResource::collection($this->fields);
+-            }),
+-            'company' => $this->when($this->company()->exists(), function () {
+-                return new CompanyResource($this->company);
+-            }),
+-            'currency' => $this->when($this->currency()->exists(), function () {
+-                return new CurrencyResource($this->currency);
+-            }),
++            'billing' => $this->when($this->billingAddress()->exists(), fn() => new AddressResource($this->billingAddress)),
++            'shipping' => $this->when($this->shippingAddress()->exists(), fn() => new AddressResource($this->shippingAddress)),
++            'fields' => $this->when($this->fields()->exists(), fn() => CustomFieldValueResource::collection($this->fields)),
++            'company' => $this->when($this->company()->exists(), fn() => new CompanyResource($this->company)),
++            'currency' => $this->when($this->currency()->exists(), fn() => new CurrencyResource($this->currency)),
+         ];
+     }
+ }
+    ----------- end diff -----------
+
+Applied rules:
+ * ClosureToArrowFunctionRector
+
+
+16) app/Http/Resources/Customer/EstimateItemResource.php:34
+
+    ---------- begin diff ----------
+@@ Line 34 @@
+             'base_price' => $this->base_price,
+             'base_tax' => $this->base_tax,
+             'base_total' => $this->base_total,
+-            'taxes' => $this->when($this->taxes()->exists(), function () {
+-                return TaxResource::collection($this->taxes);
+-            }),
+-            'fields' => $this->when($this->fields()->exists(), function () {
+-                return CustomFieldValueResource::collection($this->fields);
+-            }),
++            'taxes' => $this->when($this->taxes()->exists(), fn() => TaxResource::collection($this->taxes)),
++            'fields' => $this->when($this->fields()->exists(), fn() => CustomFieldValueResource::collection($this->fields)),
+         ];
+     }
+ }
+    ----------- end diff -----------
+
+Applied rules:
+ * ClosureToArrowFunctionRector
+
+
+17) app/Http/Resources/Customer/TransactionResource.php:21
+
+    ---------- begin diff ----------
+@@ Line 21 @@
+             'status' => $this->status,
+             'transaction_date' => $this->transaction_date,
+             'invoice_id' => $this->invoice_id,
+-            'invoice' => $this->when($this->invoice()->exists(), function () {
+-                return new InvoiceResource($this->invoice);
+-            }),
+-            'company' => $this->when($this->company()->exists(), function () {
+-                return new CompanyResource($this->company);
+-            }),
++            'invoice' => $this->when($this->invoice()->exists(), fn() => new InvoiceResource($this->invoice)),
++            'company' => $this->when($this->company()->exists(), fn() => new CompanyResource($this->company)),
+         ];
+     }
+ }
+    ----------- end diff -----------
+
+Applied rules:
+ * ClosureToArrowFunctionRector
+
+
+18) app/Http/Resources/TaxTypeResource.php:23
+
+    ---------- begin diff ----------
+@@ Line 23 @@
+             'collective_tax' => $this->collective_tax,
+             'description' => $this->description,
+             'company_id' => $this->company_id,
+-            'company' => $this->when($this->company()->exists(), function () {
+-                return new CompanyResource($this->company);
+-            }),
++            'company' => $this->when($this->company()->exists(), fn() => new CompanyResource($this->company)),
+         ];
+     }
+ }
+    ----------- end diff -----------
+
+Applied rules:
+ * ClosureToArrowFunctionRector
+
+
+19) app/Http/Resources/PaymentMethodResource.php:19
+
+    ---------- begin diff ----------
+@@ Line 19 @@
+             'name' => $this->name,
+             'company_id' => $this->company_id,
+             'type' => $this->type,
+-            'company' => $this->when($this->company()->exists(), function () {
+-                return new CompanyResource($this->company);
+-            }),
++            'company' => $this->when($this->company()->exists(), fn() => new CompanyResource($this->company)),
+         ];
+     }
+ }
+    ----------- end diff -----------
+
+Applied rules:
+ * ClosureToArrowFunctionRector
+
+
+20) app/Http/Resources/Customer/PaymentMethodResource.php:18
+
+    ---------- begin diff ----------
+@@ Line 18 @@
+             'id' => $this->id,
+             'name' => $this->name,
+             'company_id' => $this->company_id,
+-            'company' => $this->when($this->company()->exists(), function () {
+-                return new CompanyResource($this->company);
+-            }),
++            'company' => $this->when($this->company()->exists(), fn() => new CompanyResource($this->company)),
+         ];
+     }
+ }
+    ----------- end diff -----------
+
+Applied rules:
+ * ClosureToArrowFunctionRector
+
+
+21) routes/api.php:122
+
+    ---------- begin diff ----------
+@@ Line 122 @@
+ // ping
+ //----------------------------------
+
+-Route::get('ping', function () {
+-    return response()->json([
+-        'success' => 'crater-self-hosted',
+-    ]);
+-})->name('ping');
++Route::get('ping', fn() => response()->json([
++    'success' => 'crater-self-hosted',
++]))->name('ping');
+
+
+ // Version 1 endpoints
+    ----------- end diff -----------
+
+Applied rules:
+ * ClosureToArrowFunctionRector
+
+
+22) app/Models/User.php:114
+
+    ---------- begin diff ----------
+@@ Line 114 @@
+
+     public function creator()
+     {
+-        return $this->belongsTo('Crater\Models\User', 'creator_id');
++        return $this->belongsTo(\Crater\Models\User::class, 'creator_id');
+     }
+
+     public function companies()
+@@ Line 236 @@
+         }
+
+         if ($filters->get('orderByField') || $filters->get('orderBy')) {
+-            $field = $filters->get('orderByField') ? $filters->get('orderByField') : 'name';
+-            $orderBy = $filters->get('orderBy') ? $filters->get('orderBy') : 'asc';
++            $field = $filters->get('orderByField') ?: 'name';
++            $orderBy = $filters->get('orderBy') ?: 'asc';
+             $query->whereOrder($field, $orderBy);
+         }
+     }
+@@ Line 303 @@
+
+     public function getAllSettings()
+     {
+-        return $this->settings()->get()->mapWithKeys(function ($item) {
+-            return [$item['key'] => $item['value']];
+-        });
++        return $this->settings()->get()->mapWithKeys(fn($item) => [$item['key'] => $item['value']]);
+     }
+
+     public function getSettings($settings)
+     {
+-        return $this->settings()->whereIn('key', $settings)->get()->mapWithKeys(function ($item) {
+-            return [$item['key'] => $item['value']];
+-        });
++        return $this->settings()->whereIn('key', $settings)->get()->mapWithKeys(fn($item) => [$item['key'] => $item['value']]);
+     }
+
+     public function isOwner()
+    ----------- end diff -----------
+
+Applied rules:
+ * TernaryToElvisRector
+ * StringClassNameToClassConstantRector
+ * ClosureToArrowFunctionRector
+
+
+23) app/Models/Expense.php:61
+
+    ---------- begin diff ----------
+@@ Line 61 @@
+
+     public function creator()
+     {
+-        return $this->belongsTo('Crater\Models\User', 'creator_id');
++        return $this->belongsTo(\Crater\Models\User::class, 'creator_id');
+     }
+
+     public function getFormattedExpenseDateAttribute($value)
+@@ Line 169 @@
+         }
+
+         if ($filters->get('orderByField') || $filters->get('orderBy')) {
+-            $field = $filters->get('orderByField') ? $filters->get('orderByField') : 'expense_date';
+-            $orderBy = $filters->get('orderBy') ? $filters->get('orderBy') : 'asc';
++            $field = $filters->get('orderByField') ?: 'expense_date';
++            $orderBy = $filters->get('orderBy') ?: 'asc';
+             $query->whereOrder($field, $orderBy);
+         }
+    ----------- end diff -----------
+
+Applied rules:
+ * TernaryToElvisRector
+ * StringClassNameToClassConstantRector
+
+
+24) routes/web.php:118
+
+    ---------- begin diff ----------
+@@ Line 118 @@
+ // Setup for installation of app
+ // ----------------------------------------------
+
+-Route::get('/installation', function () {
+-    return view('app');
+-})->name('install')->middleware('redirect-if-installed');
++Route::get('/installation', fn() => view('app'))->name('install')->middleware('redirect-if-installed');
+
+
+ // Move other http requests to the Vue App
+ // -------------------------------------------------
+
+-Route::get('/admin/{vue?}', function () {
+-    return view('app');
+-})->where('vue', '[\/\w\.-]*')->name('admin.dashboard')->middleware(['install', 'redirect-if-unauthenticated']);
++Route::get('/admin/{vue?}', fn() => view('app'))->where('vue', '[\/\w\.-]*')->name('admin.dashboard')->middleware(['install', 'redirect-if-unauthenticated']);
+
+-Route::get('{company:slug}/customer/{vue?}', function (Company $company) {
+-    return view('app')->with([
+-        'customer_logo' => get_company_setting('customer_portal_logo', $company->id),
+-        'current_theme' => get_company_setting('customer_portal_theme', $company->id),
+-        'customer_page_title' => get_company_setting('customer_portal_page_title', $company->id)
+-    ]);
+-})->where('vue', '[\/\w\.-]*')->name('customer.dashboard')->middleware(['install']);
++Route::get('{company:slug}/customer/{vue?}', fn(Company $company) => view('app')->with([
++    'customer_logo' => get_company_setting('customer_portal_logo', $company->id),
++    'current_theme' => get_company_setting('customer_portal_theme', $company->id),
++    'customer_page_title' => get_company_setting('customer_portal_page_title', $company->id)
++]))->where('vue', '[\/\w\.-]*')->name('customer.dashboard')->middleware(['install']);
+
+-Route::get('/', function () {
+-    return view('app');
+-})->where('vue', '[\/\w\.-]*')->name('home')->middleware(['install', 'guest']);
++Route::get('/', fn() => view('app'))->where('vue', '[\/\w\.-]*')->name('home')->middleware(['install', 'guest']);
+
+-Route::get('/reset-password/{token}', function () {
+-    return view('app');
+-})->where('vue', '[\/\w\.-]*')->name('reset-password')->middleware(['install', 'guest']);
++Route::get('/reset-password/{token}', fn() => view('app'))->where('vue', '[\/\w\.-]*')->name('reset-password')->middleware(['install', 'guest']);
+
+-Route::get('/forgot-password', function () {
+-    return view('app');
+-})->where('vue', '[\/\w\.-]*')->name('forgot-password')->middleware(['install', 'guest']);
++Route::get('/forgot-password', fn() => view('app'))->where('vue', '[\/\w\.-]*')->name('forgot-password')->middleware(['install', 'guest']);
+
+-Route::get('/login', function () {
+-    return view('app');
+-})->where('vue', '[\/\w\.-]*')->name('login')->middleware(['install', 'guest']);
++Route::get('/login', fn() => view('app'))->where('vue', '[\/\w\.-]*')->name('login')->middleware(['install', 'guest']);
+    ----------- end diff -----------
+
+Applied rules:
+ * ClosureToArrowFunctionRector
+
+
+25) database/factories/InvoiceFactory.php:21
+
+    ---------- begin diff ----------
+@@ Line 21 @@
+
+     public function sent()
+     {
+-        return $this->state(function (array $attributes) {
+-            return [
+-                'status' => Invoice::STATUS_SENT,
+-            ];
+-        });
++        return $this->state(fn(array $attributes) => [
++            'status' => Invoice::STATUS_SENT,
++        ]);
+     }
+
+     public function viewed()
+     {
+-        return $this->state(function (array $attributes) {
+-            return [
+-                'status' => Invoice::STATUS_VIEWED,
+-            ];
+-        });
++        return $this->state(fn(array $attributes) => [
++            'status' => Invoice::STATUS_VIEWED,
++        ]);
+     }
+
+     public function completed()
+     {
+-        return $this->state(function (array $attributes) {
+-            return [
+-                'status' => Invoice::STATUS_COMPLETED,
+-            ];
+-        });
++        return $this->state(fn(array $attributes) => [
++            'status' => Invoice::STATUS_COMPLETED,
++        ]);
+     }
+
+     public function unpaid()
+     {
+-        return $this->state(function (array $attributes) {
+-            return [
+-                'status' => Invoice::STATUS_UNPAID,
+-            ];
+-        });
++        return $this->state(fn(array $attributes) => [
++            'status' => Invoice::STATUS_UNPAID,
++        ]);
+     }
+
+     public function partiallyPaid()
+     {
+-        return $this->state(function (array $attributes) {
+-            return [
+-                'status' => Invoice::STATUS_PARTIALLY_PAID,
+-            ];
+-        });
++        return $this->state(fn(array $attributes) => [
++            'status' => Invoice::STATUS_PARTIALLY_PAID,
++        ]);
+     }
+
+     public function paid()
+     {
+-        return $this->state(function (array $attributes) {
+-            return [
+-                'status' => Invoice::STATUS_PAID,
+-            ];
+-        });
++        return $this->state(fn(array $attributes) => [
++            'status' => Invoice::STATUS_PAID,
++        ]);
+     }
+
+     /**
+@@ Line 101 @@
+             'sub_total' => $this->faker->randomDigitNotNull,
+             'total' => $this->faker->randomDigitNotNull,
+             'discount_type' => $this->faker->randomElement(['percentage', 'fixed']),
+-            'discount_val' => function (array $invoice) {
+-                return $invoice['discount_type'] == 'percentage' ? $this->faker->numberBetween($min = 0, $max = 100) : $this->faker->randomDigitNotNull;
+-            },
+-            'discount' => function (array $invoice) {
+-                return $invoice['discount_type'] == 'percentage' ? (($invoice['discount_val'] * $invoice['total']) / 100) : $invoice['discount_val'];
+-            },
++            'discount_val' => fn(array $invoice) => $invoice['discount_type'] == 'percentage' ? $this->faker->numberBetween($min = 0, $max = 100) : $this->faker->randomDigitNotNull,
++            'discount' => fn(array $invoice) => $invoice['discount_type'] == 'percentage' ? (($invoice['discount_val'] * $invoice['total']) / 100) : $invoice['discount_val'],
+             'tax' => $this->faker->randomDigitNotNull,
+-            'due_amount' => function (array $invoice) {
+-                return $invoice['total'];
+-            },
++            'due_amount' => fn(array $invoice) => $invoice['total'],
+             'notes' => $this->faker->text(80),
+             'unique_hash' => str_random(60),
+             'customer_id' => Customer::factory(),
+    ----------- end diff -----------
+
+Applied rules:
+ * ClosureToArrowFunctionRector
+
+
+26) database/migrations/2021_06_30_062411_update_customer_id_in_all_tables.php:58
+
+    ---------- begin diff ----------
+@@ Line 58 @@
+                 ]);
+
+                 CustomFieldValue::where('custom_field_valuable_id', $user->id)
+-                    ->where('custom_field_valuable_type', 'Crater\Models\User')
++                    ->where('custom_field_valuable_type', \Crater\Models\User::class)
+                     ->update([
+-                        'custom_field_valuable_type' => 'Crater\Models\Customer',
++                        'custom_field_valuable_type' => \Crater\Models\Customer::class,
+                         'custom_field_valuable_id' => $newCustomer->id
+                     ]);
+             }
+    ----------- end diff -----------
+
+Applied rules:
+ * StringClassNameToClassConstantRector
+
+
+27) app/Http/Resources/ExpenseResource.php:32
+
+    ---------- begin diff ----------
+@@ Line 32 @@
+             'currency_id' => $this->currency_id,
+             'base_amount' => $this->base_amount,
+             'payment_method_id' => $this->payment_method_id,
+-            'customer' => $this->when($this->customer()->exists(), function () {
+-                return new CustomerResource($this->customer);
+-            }),
+-            'expense_category' => $this->when($this->category()->exists(), function () {
+-                return new ExpenseCategoryResource($this->category);
+-            }),
+-            'creator' => $this->when($this->creator()->exists(), function () {
+-                return new UserResource($this->creator);
+-            }),
+-            'fields' => $this->when($this->fields()->exists(), function () {
+-                return CustomFieldValueResource::collection($this->fields);
+-            }),
+-            'company' => $this->when($this->company()->exists(), function () {
+-                return new CompanyResource($this->company);
+-            }),
+-            'currency' => $this->when($this->currency()->exists(), function () {
+-                return new CurrencyResource($this->currency);
+-            }),
+-            'payment_method' => $this->when($this->paymentMethod()->exists(), function () {
+-                return new PaymentMethodResource($this->paymentMethod);
+-            }),
++            'customer' => $this->when($this->customer()->exists(), fn() => new CustomerResource($this->customer)),
++            'expense_category' => $this->when($this->category()->exists(), fn() => new ExpenseCategoryResource($this->category)),
++            'creator' => $this->when($this->creator()->exists(), fn() => new UserResource($this->creator)),
++            'fields' => $this->when($this->fields()->exists(), fn() => CustomFieldValueResource::collection($this->fields)),
++            'company' => $this->when($this->company()->exists(), fn() => new CompanyResource($this->company)),
++            'currency' => $this->when($this->currency()->exists(), fn() => new CurrencyResource($this->currency)),
++            'payment_method' => $this->when($this->paymentMethod()->exists(), fn() => new PaymentMethodResource($this->paymentMethod)),
+         ];
+     }
+ }
+    ----------- end diff -----------
+
+Applied rules:
+ * ClosureToArrowFunctionRector
+
+
+28) app/Http/Resources/CustomFieldValueResource.php:30
+
+    ---------- begin diff ----------
+@@ Line 30 @@
+             'company_id' => $this->company_id,
+             'default_answer' => $this->defaultAnswer,
+             'default_formatted_answer' => $this->dateTimeFormat(),
+-            'custom_field' => $this->when($this->customField()->exists(), function () {
+-                return new CustomFieldResource($this->customField);
+-            }),
+-            'company' => $this->when($this->company()->exists(), function () {
+-                return new CompanyResource($this->company);
+-            }),
++            'custom_field' => $this->when($this->customField()->exists(), fn() => new CustomFieldResource($this->customField)),
++            'company' => $this->when($this->company()->exists(), fn() => new CompanyResource($this->company)),
+         ];
+     }
+    ----------- end diff -----------
+
+Applied rules:
+ * ClosureToArrowFunctionRector
+
+
+29) app/Http/Resources/Customer/TaxResource.php:30
+
+    ---------- begin diff ----------
+@@ Line 30 @@
+             'base_amount' => $this->base_amount,
+             'currency_id' => $this->currency_id,
+             'recurring_invoice_id' => $this->recurring_invoice_id,
+-            'tax_type' => $this->when($this->taxType()->exists(), function () {
+-                return new TaxTypeResource($this->taxType);
+-            }),
+-            'currency' => $this->when($this->currency()->exists(), function () {
+-                return new CurrencyResource($this->currency);
+-            }),
++            'tax_type' => $this->when($this->taxType()->exists(), fn() => new TaxTypeResource($this->taxType)),
++            'currency' => $this->when($this->currency()->exists(), fn() => new CurrencyResource($this->currency)),
+         ];
+     }
+ }
+    ----------- end diff -----------
+
+Applied rules:
+ * ClosureToArrowFunctionRector
+
+
+30) app/Http/Resources/ExchangeRateProviderResource.php:22
+
+    ---------- begin diff ----------
+@@ Line 22 @@
+             'driver_config' => $this->driver_config,
+             'company_id' => $this->company_id,
+             'active' => $this->active,
+-            'company' => $this->when($this->company()->exists(), function () {
+-                return new CompanyResource($this->company);
+-            }),
++            'company' => $this->when($this->company()->exists(), fn() => new CompanyResource($this->company)),
+         ];
+     }
+ }
+    ----------- end diff -----------
+
+Applied rules:
+ * ClosureToArrowFunctionRector
+
+
+31) app/Models/Payment.php:107
+
+    ---------- begin diff ----------
+@@ Line 107 @@
+
+     public function creator()
+     {
+-        return $this->belongsTo('Crater\Models\User', 'creator_id');
++        return $this->belongsTo(\Crater\Models\User::class, 'creator_id');
+     }
+
+     public function currency()
+@@ Line 324 @@
+         }
+
+         if ($filters->get('orderByField') || $filters->get('orderBy')) {
+-            $field = $filters->get('orderByField') ? $filters->get('orderByField') : 'sequence_number';
+-            $orderBy = $filters->get('orderBy') ? $filters->get('orderBy') : 'desc';
++            $field = $filters->get('orderByField') ?: 'sequence_number';
++            $orderBy = $filters->get('orderBy') ?: 'desc';
+             $query->whereOrder($field, $orderBy);
+         }
+     }
+    ----------- end diff -----------
+
+Applied rules:
+ * TernaryToElvisRector
+ * StringClassNameToClassConstantRector
+
+
+32) app/Http/Requests/CustomerRequest.php:172
+
+    ---------- begin diff ----------
+@@ Line 172 @@
+
+     public function hasAddress(array $address)
+     {
+-        $data = Arr::where($address, function ($value, $key) {
+-            return isset($value);
+-        });
++        $data = Arr::where($address, fn($value, $key) => isset($value));
+
+         return $data;
+     }
+    ----------- end diff -----------
+
+Applied rules:
+ * ClosureToArrowFunctionRector
+
+
+33) app/Models/CompanySetting.php:40
+
+    ---------- begin diff ----------
+@@ Line 40 @@
+
+     public static function getAllSettings($company_id)
+     {
+-        return static::whereCompany($company_id)->get()->mapWithKeys(function ($item) {
+-            return [$item['option'] => $item['value']];
+-        });
++        return static::whereCompany($company_id)->get()->mapWithKeys(fn($item) => [$item['option'] => $item['value']]);
+     }
+
+     public static function getSettings($settings, $company_id)
+     {
+         return static::whereIn('option', $settings)->whereCompany($company_id)
+-            ->get()->mapWithKeys(function ($item) {
+-                return [$item['option'] => $item['value']];
+-            });
++            ->get()->mapWithKeys(fn($item) => [$item['option'] => $item['value']]);
+     }
+
+     public static function getSetting($key, $company_id)
+    ----------- end diff -----------
+
+Applied rules:
+ * ClosureToArrowFunctionRector
+
+
+34) app/Http/Resources/InvoiceItemResource.php:35
+
+    ---------- begin diff ----------
+@@ Line 35 @@
+             'base_tax' => $this->base_tax,
+             'base_total' => $this->base_total,
+             'recurring_invoice_id' => $this->recurring_invoice_id,
+-            'taxes' => $this->when($this->taxes()->exists(), function () {
+-                return TaxResource::collection($this->taxes);
+-            }),
+-            'fields' => $this->when($this->fields()->exists(), function () {
+-                return CustomFieldValueResource::collection($this->fields);
+-            }),
++            'taxes' => $this->when($this->taxes()->exists(), fn() => TaxResource::collection($this->taxes)),
++            'fields' => $this->when($this->fields()->exists(), fn() => CustomFieldValueResource::collection($this->fields)),
+         ];
+     }
+ }
+    ----------- end diff -----------
+
+Applied rules:
+ * ClosureToArrowFunctionRector
+
+
+35) app/Http/Resources/ItemResource.php:27
+
+    ---------- begin diff ----------
+@@ Line 27 @@
+             'updated_at' => $this->updated_at,
+             'tax_per_item' => $this->tax_per_item,
+             'formatted_created_at' => $this->formattedCreatedAt,
+-            'unit' => $this->when($this->unit()->exists(), function () {
+-                return new UnitResource($this->unit);
+-            }),
+-            'company' => $this->when($this->company()->exists(), function () {
+-                return new CompanyResource($this->company);
+-            }),
+-            'taxes' => $this->when($this->taxes()->exists(), function () {
+-                return TaxResource::collection($this->taxes);
+-            }),
+-            'currency' => $this->when($this->currency()->exists(), function () {
+-                return new CurrencyResource($this->currency);
+-            }),
++            'unit' => $this->when($this->unit()->exists(), fn() => new UnitResource($this->unit)),
++            'company' => $this->when($this->company()->exists(), fn() => new CompanyResource($this->company)),
++            'taxes' => $this->when($this->taxes()->exists(), fn() => TaxResource::collection($this->taxes)),
++            'currency' => $this->when($this->currency()->exists(), fn() => new CurrencyResource($this->currency)),
+         ];
+     }
+ }
+    ----------- end diff -----------
+
+Applied rules:
+ * ClosureToArrowFunctionRector
+
+
+36) app/Http/Resources/TaxResource.php:31
+
+    ---------- begin diff ----------
+@@ Line 31 @@
+             'currency_id' => $this->currency_id,
+             'type' => $this->taxType->type,
+             'recurring_invoice_id' => $this->recurring_invoice_id,
+-            'tax_type' => $this->when($this->taxType()->exists(), function () {
+-                return new TaxTypeResource($this->taxType);
+-            }),
+-            'currency' => $this->when($this->currency()->exists(), function () {
+-                return new CurrencyResource($this->currency);
+-            }),
++            'tax_type' => $this->when($this->taxType()->exists(), fn() => new TaxTypeResource($this->taxType)),
++            'currency' => $this->when($this->currency()->exists(), fn() => new CurrencyResource($this->currency)),
+         ];
+     }
+ }
+    ----------- end diff -----------
+
+Applied rules:
+ * ClosureToArrowFunctionRector
+
+
+37) app/Http/Resources/CustomFieldResource.php:34
+
+    ---------- begin diff ----------
+@@ Line 34 @@
+             'order' => $this->order,
+             'company_id' => $this->company_id,
+             'default_answer' => $this->default_answer,
+-            'company' => $this->when($this->company()->exists(), function () {
+-                return new CompanyResource($this->company);
+-            }),
++            'company' => $this->when($this->company()->exists(), fn() => new CompanyResource($this->company)),
+         ];
+     }
+ }
+    ----------- end diff -----------
+
+Applied rules:
+ * ClosureToArrowFunctionRector
+
+
+38) app/Http/Resources/AddressResource.php:29
+
+    ---------- begin diff ----------
+@@ Line 29 @@
+             'user_id' => $this->user_id,
+             'company_id' => $this->company_id,
+             'customer_id' => $this->customer_id,
+-            'country' => $this->when($this->country()->exists(), function () {
+-                return new CountryResource($this->country);
+-            }),
+-            'user' => $this->when($this->user()->exists(), function () {
+-                return new UserResource($this->user);
+-            }),
++            'country' => $this->when($this->country()->exists(), fn() => new CountryResource($this->country)),
++            'user' => $this->when($this->user()->exists(), fn() => new UserResource($this->user)),
+         ];
+     }
+ }
+    ----------- end diff -----------
+
+Applied rules:
+ * ClosureToArrowFunctionRector
+
+
+39) app/Http/Middleware/ScopeBouncer.php:34
+
+    ---------- begin diff ----------
+@@ Line 34 @@
+     public function handle($request, Closure $next)
+     {
+         $user = $request->user();
+-        $tenantId = $request->header('company')
+-            ? $request->header('company')
+-            : $user->companies()->first()->id;
++        $tenantId = $request->header('company') ?: $user->companies()->first()->id;
+
+         $this->bouncer->scope()->to($tenantId);
+    ----------- end diff -----------
+
+Applied rules:
+ * TernaryToElvisRector
+
+
+40) app/Models/Estimate.php:68
+
+    ---------- begin diff ----------
+@@ Line 68 @@
+
+     public function items()
+     {
+-        return $this->hasMany('Crater\Models\EstimateItem');
++        return $this->hasMany(\Crater\Models\EstimateItem::class);
+     }
+
+     public function customer()
+@@ Line 78 @@
+
+     public function creator()
+     {
+-        return $this->belongsTo('Crater\Models\User', 'creator_id');
++        return $this->belongsTo(\Crater\Models\User::class, 'creator_id');
+     }
+
+     public function company()
+     {
+-        return $this->belongsTo('Crater\Models\Company');
++        return $this->belongsTo(\Crater\Models\Company::class);
+     }
+
+     public function currency()
+@@ Line 175 @@
+         }
+
+         if ($filters->get('orderByField') || $filters->get('orderBy')) {
+-            $field = $filters->get('orderByField') ? $filters->get('orderByField') : 'sequence_number';
+-            $orderBy = $filters->get('orderBy') ? $filters->get('orderBy') : 'desc';
++            $field = $filters->get('orderByField') ?: 'sequence_number';
++            $orderBy = $filters->get('orderBy') ?: 'desc';
+             $query->whereOrder($field, $orderBy);
+         }
+     }
+@@ Line 378 @@
+         if ($this->tax_per_item === 'YES') {
+             foreach ($this->items as $item) {
+                 foreach ($item->taxes as $tax) {
+-                    $found = $taxes->filter(function ($item) use ($tax) {
+-                        return $item->tax_type_id == $tax->tax_type_id;
+-                    })->first();
++                    $found = $taxes->filter(fn($item) => $item->tax_type_id == $tax->tax_type_id)->first();
+
+                     if ($found) {
+                         $found->amount += $tax->amount;
+    ----------- end diff -----------
+
+Applied rules:
+ * TernaryToElvisRector
+ * StringClassNameToClassConstantRector
+ * ClosureToArrowFunctionRector
+
+
+41) app/Http/Controllers/V1/Admin/Role/RolesController.php:21
+
+    ---------- begin diff ----------
+@@ Line 21 @@
+     {
+         $this->authorize('viewAny', Role::class);
+
+-        $roles = Role::when($request->has('orderByField'), function ($query) use ($request) {
+-            return $query->orderBy($request['orderByField'], $request['orderBy']);
+-        })
+-            ->when($request->company_id, function ($query) use ($request) {
+-                return $query->where('scope', $request->company_id);
+-            })
++        $roles = Role::when($request->has('orderByField'), fn($query) => $query->orderBy($request['orderByField'], $request['orderBy']))
++            ->when($request->company_id, fn($query) => $query->where('scope', $request->company_id))
+             ->get();
+
+         return RoleResource::collection($roles);
+    ----------- end diff -----------
+
+Applied rules:
+ * ClosureToArrowFunctionRector
+
+
+42) app/Http/Resources/EstimateResource.php:46
+
+    ---------- begin diff ----------
+@@ Line 46 @@
+             'estimate_pdf_url' => $this->estimatePdfUrl,
+             'sales_tax_type' => $this->sales_tax_type,
+             'sales_tax_address_type' => $this->sales_tax_address_type,
+-            'items' => $this->when($this->items()->exists(), function () {
+-                return EstimateItemResource::collection($this->items);
+-            }),
+-            'customer' => $this->when($this->customer()->exists(), function () {
+-                return new CustomerResource($this->customer);
+-            }),
+-            'creator' => $this->when($this->creator()->exists(), function () {
+-                return new UserResource($this->creator);
+-            }),
+-            'taxes' => $this->when($this->taxes()->exists(), function () {
+-                return TaxResource::collection($this->taxes);
+-            }),
+-            'fields' => $this->when($this->fields()->exists(), function () {
+-                return CustomFieldValueResource::collection($this->fields);
+-            }),
+-            'company' => $this->when($this->company()->exists(), function () {
+-                return new CompanyResource($this->company);
+-            }),
+-            'currency' => $this->when($this->currency()->exists(), function () {
+-                return new CurrencyResource($this->currency);
+-            }),
++            'items' => $this->when($this->items()->exists(), fn() => EstimateItemResource::collection($this->items)),
++            'customer' => $this->when($this->customer()->exists(), fn() => new CustomerResource($this->customer)),
++            'creator' => $this->when($this->creator()->exists(), fn() => new UserResource($this->creator)),
++            'taxes' => $this->when($this->taxes()->exists(), fn() => TaxResource::collection($this->taxes)),
++            'fields' => $this->when($this->fields()->exists(), fn() => CustomFieldValueResource::collection($this->fields)),
++            'company' => $this->when($this->company()->exists(), fn() => new CompanyResource($this->company)),
++            'currency' => $this->when($this->currency()->exists(), fn() => new CurrencyResource($this->currency)),
+         ];
+     }
+ }
+    ----------- end diff -----------
+
+Applied rules:
+ * ClosureToArrowFunctionRector
+
+
+43) app/Http/Resources/CustomerResource.php:36
+
+    ---------- begin diff ----------
+@@ Line 36 @@
+             'due_amount' => $this->due_amount,
+             'base_due_amount' => $this->base_due_amount,
+             'prefix' => $this->prefix,
+-            'billing' => $this->when($this->billingAddress()->exists(), function () {
+-                return new AddressResource($this->billingAddress);
+-            }),
+-            'shipping' => $this->when($this->shippingAddress()->exists(), function () {
+-                return new AddressResource($this->shippingAddress);
+-            }),
+-            'fields' => $this->when($this->fields()->exists(), function () {
+-                return CustomFieldValueResource::collection($this->fields);
+-            }),
+-            'company' => $this->when($this->company()->exists(), function () {
+-                return new CompanyResource($this->company);
+-            }),
+-            'currency' => $this->when($this->currency()->exists(), function () {
+-                return new CurrencyResource($this->currency);
+-            }),
++            'billing' => $this->when($this->billingAddress()->exists(), fn() => new AddressResource($this->billingAddress)),
++            'shipping' => $this->when($this->shippingAddress()->exists(), fn() => new AddressResource($this->shippingAddress)),
++            'fields' => $this->when($this->fields()->exists(), fn() => CustomFieldValueResource::collection($this->fields)),
++            'company' => $this->when($this->company()->exists(), fn() => new CompanyResource($this->company)),
++            'currency' => $this->when($this->currency()->exists(), fn() => new CurrencyResource($this->currency)),
+         ];
+     }
+ }
+    ----------- end diff -----------
+
+Applied rules:
+ * ClosureToArrowFunctionRector
+
+
+44) app/Providers/RouteServiceProvider.php:65
+
+    ---------- begin diff ----------
+@@ Line 65 @@
+      */
+     protected function configureRateLimiting()
+     {
+-        RateLimiter::for('api', function (Request $request) {
+-            return Limit::perMinute(60);
+-        });
++        RateLimiter::for('api', fn(Request $request) => Limit::perMinute(60));
+     }
+ }
+    ----------- end diff -----------
+
+Applied rules:
+ * ClosureToArrowFunctionRector
+
+
+45) app/Http/Resources/CompanyResource.php:22
+
+    ---------- begin diff ----------
+@@ Line 22 @@
+             'unique_hash' => $this->unique_hash,
+             'owner_id' => $this->owner_id,
+             'slug' => $this->slug,
+-            'address' => $this->when($this->address()->exists(), function () {
+-                return new AddressResource($this->address);
+-            }),
++            'address' => $this->when($this->address()->exists(), fn() => new AddressResource($this->address)),
+             'roles' => RoleResource::collection($this->roles)
+         ];
+     }
+    ----------- end diff -----------
+
+Applied rules:
+ * ClosureToArrowFunctionRector
+
+
+46) app/Http/Resources/NoteResource.php:19
+
+    ---------- begin diff ----------
+@@ Line 19 @@
+             'type' => $this->type,
+             'name' => $this->name,
+             'notes' => $this->notes,
+-            'company' => $this->when($this->company()->exists(), function () {
+-                return new CompanyResource($this->company);
+-            }),
++            'company' => $this->when($this->company()->exists(), fn() => new CompanyResource($this->company)),
+         ];
+     }
+ }
+    ----------- end diff -----------
+
+Applied rules:
+ * ClosureToArrowFunctionRector
+
+
+47) app/Http/Resources/Customer/CompanyResource.php:22
+
+    ---------- begin diff ----------
+@@ Line 22 @@
+             'logo_path' => $this->logo_path,
+             'unique_hash' => $this->unique_hash,
+             'owner_id' => $this->owner_id,
+-            'address' => $this->when($this->address()->exists(), function () {
+-                return new AddressResource($this->address);
+-            }),
++            'address' => $this->when($this->address()->exists(), fn() => new AddressResource($this->address)),
+         ];
+     }
+ }
+    ----------- end diff -----------
+
+Applied rules:
+ * ClosureToArrowFunctionRector
+
+
+48) routes/channels.php:10
+
+    ---------- begin diff ----------
+@@ Line 10 @@
+     return true; //(int) $user->conversation_id === (int) $cid
+ });
+
+-Broadcast::channel('company.{companyId}', function ($user, $companyId) {
+-    return ['id' => $user->id, 'name' => $user->name];
+-});
++Broadcast::channel('company.{companyId}', fn($user, $companyId) => ['id' => $user->id, 'name' => $user->name]);
+    ----------- end diff -----------
+
+Applied rules:
+ * ClosureToArrowFunctionRector
+
+
+49) app/Http/Resources/UnitResource.php:18
+
+    ---------- begin diff ----------
+@@ Line 18 @@
+             'id' => $this->id,
+             'name' => $this->name,
+             'company_id' => $this->company_id,
+-            'company' => $this->when($this->company()->exists(), function () {
+-                return new CompanyResource($this->company);
+-            }),
++            'company' => $this->when($this->company()->exists(), fn() => new CompanyResource($this->company)),
+         ];
+     }
+ }
+    ----------- end diff -----------
+
+Applied rules:
+ * ClosureToArrowFunctionRector
+
+
+50) app/Models/FileDisk.php:69
+
+    ---------- begin diff ----------
+@@ Line 69 @@
+         }
+
+         if ($filters->get('orderByField') || $filters->get('orderBy')) {
+-            $field = $filters->get('orderByField') ? $filters->get('orderByField') : 'sequence_number';
+-            $orderBy = $filters->get('orderBy') ? $filters->get('orderBy') : 'asc';
++            $field = $filters->get('orderByField') ?: 'sequence_number';
++            $orderBy = $filters->get('orderBy') ?: 'asc';
+             $query->whereOrder($field, $orderBy);
+         }
+     }
+    ----------- end diff -----------
+
+Applied rules:
+ * TernaryToElvisRector
+
+
+51) app/Http/Resources/Customer/ExpenseResource.php:31
+
+    ---------- begin diff ----------
+@@ Line 31 @@
+             'currency_id' => $this->currency_id,
+             'base_amount' => $this->base_amount,
+             'payment_method_id' => $this->payment_method_id,
+-            'customer' => $this->when($this->customer()->exists(), function () {
+-                return new CustomerResource($this->customer);
+-            }),
+-            'expense_category' => $this->when($this->category()->exists(), function () {
+-                return new ExpenseCategoryResource($this->category);
+-            }),
+-            'fields' => $this->when($this->fields()->exists(), function () {
+-                return CustomFieldValueResource::collection($this->fields);
+-            }),
+-            'company' => $this->when($this->company()->exists(), function () {
+-                return new CompanyResource($this->company);
+-            }),
+-            'currency' => $this->when($this->currency()->exists(), function () {
+-                return new CurrencyResource($this->currency);
+-            }),
+-            'payment_method' => $this->when($this->paymentMethod()->exists(), function () {
+-                return new PaymentMethodResource($this->paymentMethod);
+-            }),
++            'customer' => $this->when($this->customer()->exists(), fn() => new CustomerResource($this->customer)),
++            'expense_category' => $this->when($this->category()->exists(), fn() => new ExpenseCategoryResource($this->category)),
++            'fields' => $this->when($this->fields()->exists(), fn() => CustomFieldValueResource::collection($this->fields)),
++            'company' => $this->when($this->company()->exists(), fn() => new CompanyResource($this->company)),
++            'currency' => $this->when($this->currency()->exists(), fn() => new CurrencyResource($this->currency)),
++            'payment_method' => $this->when($this->paymentMethod()->exists(), fn() => new PaymentMethodResource($this->paymentMethod)),
+         ];
+     }
+ }
+    ----------- end diff -----------
+
+Applied rules:
+ * ClosureToArrowFunctionRector
+
+
+52) app/Models/TaxType.php:58
+
+    ---------- begin diff ----------
+@@ Line 58 @@
+         }
+
+         if ($filters->get('orderByField') || $filters->get('orderBy')) {
+-            $field = $filters->get('orderByField') ? $filters->get('orderByField') : 'payment_number';
+-            $orderBy = $filters->get('orderBy') ? $filters->get('orderBy') : 'asc';
++            $field = $filters->get('orderByField') ?: 'payment_number';
++            $orderBy = $filters->get('orderBy') ?: 'asc';
+             $query->whereOrder($field, $orderBy);
+         }
+     }
+    ----------- end diff -----------
+
+Applied rules:
+ * TernaryToElvisRector
+
+
+53) app/Http/Controllers/V1/Admin/Backup/DownloadBackupController.php:23
+
+    ---------- begin diff ----------
+@@ Line 23 @@
+
+         $backupDestination = BackupDestination::create(config('filesystems.default'), config('backup.backup.name'));
+
+-        $backup = $backupDestination->backups()->first(function (Backup $backup) use ($validated) {
+-            return $backup->path() === $validated['path'];
+-        });
++        $backup = $backupDestination->backups()->first(fn(Backup $backup) => $backup->path() === $validated['path']);
+
+         if (! $backup) {
+             return response('Backup not found', Response::HTTP_UNPROCESSABLE_ENTITY);
+    ----------- end diff -----------
+
+Applied rules:
+ * ClosureToArrowFunctionRector
+
+
+54) app/Http/Controllers/V1/Admin/ExchangeRate/GetUsedCurrenciesController.php:22
+
+    ---------- begin diff ----------
+@@ Line 22 @@
+
+         $activeExchangeRateProviders = ExchangeRateProvider::where('active', true)
+             ->whereCompany()
+-            ->when($providerId, function ($query) use ($providerId) {
+-                return $query->where('id', '<>', $providerId);
+-            })
++            ->when($providerId, fn($query) => $query->where('id', '<>', $providerId))
+             ->pluck('currencies');
+         $activeExchangeRateProvider = [];
+
+@@ Line 48 @@
+         }
+
+         return response()->json([
+-            'allUsedCurrencies' => $allExchangeRateProvider ? $allExchangeRateProvider : [],
+-            'activeUsedCurrencies' => $activeExchangeRateProvider ? $activeExchangeRateProvider : [],
++            'allUsedCurrencies' => $allExchangeRateProvider ?: [],
++            'activeUsedCurrencies' => $activeExchangeRateProvider ?: [],
+         ]);
+     }
+ }
+    ----------- end diff -----------
+
+Applied rules:
+ * TernaryToElvisRector
+ * ClosureToArrowFunctionRector
+
+
+55) app/Http/Resources/Customer/InvoiceItemResource.php:35
+
+    ---------- begin diff ----------
+@@ Line 35 @@
+             'base_tax' => $this->base_tax,
+             'base_total' => $this->base_total,
+             'recurring_invoice_id' => $this->recurring_invoice_id,
+-            'taxes' => $this->when($this->taxes()->exists(), function () {
+-                return TaxResource::collection($this->taxes);
+-            }),
+-            'fields' => $this->when($this->fields()->exists(), function () {
+-                return CustomFieldValueResource::collection($this->fields);
+-            }),
++            'taxes' => $this->when($this->taxes()->exists(), fn() => TaxResource::collection($this->taxes)),
++            'fields' => $this->when($this->fields()->exists(), fn() => CustomFieldValueResource::collection($this->fields)),
+         ];
+     }
+ }
+    ----------- end diff -----------
+
+Applied rules:
+ * ClosureToArrowFunctionRector
+
+
+56) app/Http/Resources/Customer/UserResource.php:34
+
+    ---------- begin diff ----------
+@@ Line 34 @@
+             'is_owner' => $this->isOwner(),
+             'roles' => $this->roles,
+             'formatted_created_at' => $this->formattedCreatedAt,
+-            'currency' => $this->when($this->currency()->exists(), function () {
+-                return new CurrencyResource($this->currency);
+-            }),
+-            'companies' => $this->when($this->companies()->exists(), function () {
+-                return CompanyResource::collection($this->companies);
+-            }),
++            'currency' => $this->when($this->currency()->exists(), fn() => new CurrencyResource($this->currency)),
++            'companies' => $this->when($this->companies()->exists(), fn() => CompanyResource::collection($this->companies)),
+         ];
+     }
+ }
+    ----------- end diff -----------
+
+Applied rules:
+ * ClosureToArrowFunctionRector
+
+
+57) app/Models/Setting.php:57
+
+    ---------- begin diff ----------
+@@ Line 57 @@
+     public static function getSettings($settings)
+     {
+         return static::whereIn('option', $settings)
+-            ->get()->mapWithKeys(function ($item) {
+-                return [$item['option'] => $item['value']];
+-            });
++            ->get()->mapWithKeys(fn($item) => [$item['option'] => $item['value']]);
+     }
+ }
+    ----------- end diff -----------
+
+Applied rules:
+ * ClosureToArrowFunctionRector
+
+
+58) database/factories/CustomFieldFactory.php:28
+
+    ---------- begin diff ----------
+@@ Line 28 @@
+             'order' => $this->faker->randomDigitNotNull,
+             'is_required' => $this->faker->randomElement([true, false]),
+             'model_type' => $this->faker->randomElement(['Customer', 'Invoice', 'Estimate', 'Expense', 'Payment']),
+-            'slug' => function (array $item) {
+-                return clean_slug($item['model_type'], $item['label']);
+-            },
++            'slug' => fn(array $item) => clean_slug($item['model_type'], $item['label']),
+             'type' => $this->faker->randomElement(['Text', 'Textarea', 'Phone', 'URL', 'Number','Dropdown' , 'Switch', 'Date', 'DateTime', 'Time']),
+             'company_id' => User::find(1)->companies()->first()->id,
+         ];
+    ----------- end diff -----------
+
+Applied rules:
+ * ClosureToArrowFunctionRector
+
+
+59) app/Http/Resources/TransactionResource.php:21
+
+    ---------- begin diff ----------
+@@ Line 21 @@
+             'status' => $this->status,
+             'transaction_date' => $this->transaction_date,
+             'invoice_id' => $this->invoice_id,
+-            'invoice' => $this->when($this->invoice()->exists(), function () {
+-                return new InvoiceResource($this->invoice);
+-            }),
+-            'company' => $this->when($this->company()->exists(), function () {
+-                return new CompanyResource($this->company);
+-            }),
++            'invoice' => $this->when($this->invoice()->exists(), fn() => new InvoiceResource($this->invoice)),
++            'company' => $this->when($this->company()->exists(), fn() => new CompanyResource($this->company)),
+         ];
+     }
+ }
+    ----------- end diff -----------
+
+Applied rules:
+ * ClosureToArrowFunctionRector
+
+
+60) app/Models/RecurringInvoice.php:178
+
+    ---------- begin diff ----------
+@@ Line 178 @@
+         }
+
+         if ($filters->get('orderByField') || $filters->get('orderBy')) {
+-            $field = $filters->get('orderByField') ? $filters->get('orderByField') : 'created_at';
+-            $orderBy = $filters->get('orderBy') ? $filters->get('orderBy') : 'asc';
++            $field = $filters->get('orderByField') ?: 'created_at';
++            $orderBy = $filters->get('orderBy') ?: 'asc';
+             $query->whereOrder($field, $orderBy);
+         }
+     }
+    ----------- end diff -----------
+
+Applied rules:
+ * TernaryToElvisRector
+
+
+61) app/Space/RequirementsChecker.php:70
+
+    ---------- begin diff ----------
+@@ Line 70 @@
+     public function checkPHPVersion(string $minPhpVersion = null)
+     {
+         $minVersionPhp = $minPhpVersion;
+-        $currentPhpVersion = $this->getPhpVersionInfo();
++        $currentPhpVersion = self::getPhpVersionInfo();
+         $supported = false;
+
+         if ($minPhpVersion == null) {
+@@ Line 131 @@
+
+         $minVersionMysql = $isMariaDb ? config('crater.min_mariadb_version') : config('crater.min_mysql_version');
+
+-        $currentMysqlVersion = $this->getMysqlVersionInfo($conn);
++        $currentMysqlVersion = self::getMysqlVersionInfo($conn);
+
+         $supported = false;
+
+@@ Line 170 @@
+     public function checkSqliteVersion(string $minSqliteVersion = null)
+     {
+         $minVersionSqlite = $minSqliteVersion;
+-        $currentSqliteVersion = $this->getSqliteVersionInfo();
++        $currentSqliteVersion = self::getSqliteVersionInfo();
+         $supported = false;
+
+         if (version_compare($currentSqliteVersion, $minVersionSqlite) >= 0) {
+@@ Line 206 @@
+     public function checkPgsqlVersion($conn, string $minPgsqlVersion = null)
+     {
+         $minVersionPgsql = $minPgsqlVersion;
+-        $currentPgsqlVersion = $this->getPgsqlVersionInfo($conn);
++        $currentPgsqlVersion = self::getPgsqlVersionInfo($conn);
+         $supported = false;
+
+         if (version_compare($currentPgsqlVersion, $minVersionPgsql) >= 0) {
+    ----------- end diff -----------
+
+Applied rules:
+ * ThisCallOnStaticMethodToStaticCallRector
+
+
+62) app/Http/Controllers/V1/Admin/General/BulkExchangeRateController.php:25
+
+    ---------- begin diff ----------
+@@ Line 25 @@
+         if ($bulkExchangeRate == 'NO') {
+             if ($request->currencies) {
+                 foreach ($request->currencies as $currency) {
+-                    $currency['exchange_rate'] = $currency['exchange_rate'] ?? 1;
++                    $currency['exchange_rate'] ??= 1;
+
+                     $invoices = Invoice::where('currency_id', $currency['id'])->get();
+    ----------- end diff -----------
+
+Applied rules:
+ * NullCoalescingOperatorRector
+
+
+63) database/factories/EstimateFactory.php:20
+
+    ---------- begin diff ----------
+@@ Line 20 @@
+
+     public function sent()
+     {
+-        return $this->state(function (array $attributes) {
+-            return [
+-                'status' => Estimate::STATUS_SENT,
+-            ];
+-        });
++        return $this->state(fn(array $attributes) => [
++            'status' => Estimate::STATUS_SENT,
++        ]);
+     }
+
+     public function viewed()
+     {
+-        return $this->state(function (array $attributes) {
+-            return [
+-                'status' => Estimate::STATUS_VIEWED,
+-            ];
+-        });
++        return $this->state(fn(array $attributes) => [
++            'status' => Estimate::STATUS_VIEWED,
++        ]);
+     }
+
+     public function expired()
+     {
+-        return $this->state(function (array $attributes) {
+-            return [
+-                'status' => Estimate::STATUS_EXPIRED,
+-            ];
+-        });
++        return $this->state(fn(array $attributes) => [
++            'status' => Estimate::STATUS_EXPIRED,
++        ]);
+     }
+
+     public function accepted()
+     {
+-        return $this->state(function (array $attributes) {
+-            return [
+-                'status' => Estimate::STATUS_ACCEPTED,
+-            ];
+-        });
++        return $this->state(fn(array $attributes) => [
++            'status' => Estimate::STATUS_ACCEPTED,
++        ]);
+     }
+
+     public function rejected()
+     {
+-        return $this->state(function (array $attributes) {
+-            return [
+-                'status' => Estimate::STATUS_REJECTED,
+-            ];
+-        });
++        return $this->state(fn(array $attributes) => [
++            'status' => Estimate::STATUS_REJECTED,
++        ]);
+     }
+
+     /**
+@@ Line 88 @@
+             'sub_total' => $this->faker->randomDigitNotNull,
+             'total' => $this->faker->randomDigitNotNull,
+             'discount_type' => $this->faker->randomElement(['percentage', 'fixed']),
+-            'discount_val' => function (array $estimate) {
+-                return $estimate['discount_type'] == 'percentage' ? $this->faker->numberBetween($min = 0, $max = 100) : $this->faker->randomDigitNotNull;
+-            },
+-            'discount' => function (array $estimate) {
+-                return $estimate['discount_type'] == 'percentage' ? (($estimate['discount_val'] * $estimate['total']) / 100) : $estimate['discount_val'];
+-            },
++            'discount_val' => fn(array $estimate) => $estimate['discount_type'] == 'percentage' ? $this->faker->numberBetween($min = 0, $max = 100) : $this->faker->randomDigitNotNull,
++            'discount' => fn(array $estimate) => $estimate['discount_type'] == 'percentage' ? (($estimate['discount_val'] * $estimate['total']) / 100) : $estimate['discount_val'],
+             'tax_per_item' => 'YES',
+             'discount_per_item' => 'No',
+             'tax' => $this->faker->randomDigitNotNull,
+    ----------- end diff -----------
+
+Applied rules:
+ * ClosureToArrowFunctionRector
+
+
+64) app/Traits/HasCustomFieldsTrait.php:8
+
+    ---------- begin diff ----------
+@@ Line 8 @@
+ {
+     public function fields()
+     {
+-        return $this->morphMany('Crater\Models\CustomFieldValue', 'custom_field_valuable');
++        return $this->morphMany(\Crater\Models\CustomFieldValue::class, 'custom_field_valuable');
+     }
+
+     protected static function booted()
+    ----------- end diff -----------
+
+Applied rules:
+ * StringClassNameToClassConstantRector
+
+
+65) app/Http/Resources/EstimateItemResource.php:34
+
+    ---------- begin diff ----------
+@@ Line 34 @@
+             'base_price' => $this->base_price,
+             'base_tax' => $this->base_tax,
+             'base_total' => $this->base_total,
+-            'taxes' => $this->when($this->taxes()->exists(), function () {
+-                return TaxResource::collection($this->taxes);
+-            }),
+-            'fields' => $this->when($this->fields()->exists(), function () {
+-                return CustomFieldValueResource::collection($this->fields);
+-            }),
++            'taxes' => $this->when($this->taxes()->exists(), fn() => TaxResource::collection($this->taxes)),
++            'fields' => $this->when($this->fields()->exists(), fn() => CustomFieldValueResource::collection($this->fields)),
+         ];
+     }
+ }
+    ----------- end diff -----------
+
+Applied rules:
+ * ClosureToArrowFunctionRector
+
+
+66) app/Http/Resources/Customer/ExpenseCategoryResource.php:21
+
+    ---------- begin diff ----------
+@@ Line 21 @@
+             'company_id' => $this->company_id,
+             'amount' => $this->amount,
+             'formatted_created_at' => $this->formattedCreatedAt,
+-            'company' => $this->when($this->company()->exists(), function () {
+-                return new CompanyResource($this->company);
+-            }),
++            'company' => $this->when($this->company()->exists(), fn() => new CompanyResource($this->company)),
+         ];
+     }
+ }
+    ----------- end diff -----------
+
+Applied rules:
+ * ClosureToArrowFunctionRector
+
+
+67) app/Models/Invoice.php:74
+
+    ---------- begin diff ----------
+@@ Line 74 @@
+
+     public function items()
+     {
+-        return $this->hasMany('Crater\Models\InvoiceItem');
++        return $this->hasMany(\Crater\Models\InvoiceItem::class);
+     }
+
+     public function taxes()
+@@ Line 279 @@
+         }
+
+         if ($filters->get('orderByField') || $filters->get('orderBy')) {
+-            $field = $filters->get('orderByField') ? $filters->get('orderByField') : 'sequence_number';
+-            $orderBy = $filters->get('orderBy') ? $filters->get('orderBy') : 'desc';
++            $field = $filters->get('orderByField') ?: 'sequence_number';
++            $orderBy = $filters->get('orderBy') ?: 'desc';
+             $query->whereOrder($field, $orderBy);
+         }
+     }
+@@ Line 546 @@
+         if ($this->tax_per_item === 'YES') {
+             foreach ($this->items as $item) {
+                 foreach ($item->taxes as $tax) {
+-                    $found = $taxes->filter(function ($item) use ($tax) {
+-                        return $item->tax_type_id == $tax->tax_type_id;
+-                    })->first();
++                    $found = $taxes->filter(fn($item) => $item->tax_type_id == $tax->tax_type_id)->first();
+
+                     if ($found) {
+                         $found->amount += $tax->amount;
+    ----------- end diff -----------
+
+Applied rules:
+ * TernaryToElvisRector
+ * StringClassNameToClassConstantRector
+ * ClosureToArrowFunctionRector
+
+
+68) app/Models/Company.php:343
+
+    ---------- begin diff ----------
+@@ Line 343 @@
+             });
+         }
+
+-        $roles = Role::when($this->id, function ($query) {
+-            return $query->where('scope', $this->id);
+-        })->get();
++        $roles = Role::when($this->id, fn($query) => $query->where('scope', $this->id))->get();
+
+         if ($roles) {
+             $roles->map(function ($role) {
+    ----------- end diff -----------
+
+Applied rules:
+ * ClosureToArrowFunctionRector
+
+
+69) app/Space/helpers.php:49
+
+    ---------- begin diff ----------
+@@ Line 49 @@
+         if ($routeName === 'customer.dashboard') {
+             $pageTitle = CompanySetting::getSetting('customer_portal_page_title', $company_id);
+
+-            return $pageTitle ? $pageTitle : $defaultPageTitle;
++            return $pageTitle ?: $defaultPageTitle;
+         }
+
+         $pageTitle = Setting::getSetting('admin_page_title');
+
+-        return $pageTitle ? $pageTitle : $defaultPageTitle;
++        return $pageTitle ?: $defaultPageTitle;
+     }
+ }
+    ----------- end diff -----------
+
+Applied rules:
+ * TernaryToElvisRector
+
+
+70) app/Http/Resources/Customer/InvoiceResource.php:52
+
+    ---------- begin diff ----------
+@@ Line 52 @@
+             'formatted_due_date' => $this->formattedDueDate,
+             'payment_module_enabled' => $this->payment_module_enabled,
+             'overdue' => $this->overdue,
+-            'items' => $this->when($this->items()->exists(), function () {
+-                return InvoiceItemResource::collection($this->items);
+-            }),
+-            'customer' => $this->when($this->customer()->exists(), function () {
+-                return new CustomerResource($this->customer);
+-            }),
+-            'taxes' => $this->when($this->taxes()->exists(), function () {
+-                return TaxResource::collection($this->taxes);
+-            }),
+-            'fields' => $this->when($this->fields()->exists(), function () {
+-                return CustomFieldValueResource::collection($this->fields);
+-            }),
+-            'company' => $this->when($this->company()->exists(), function () {
+-                return new CompanyResource($this->company);
+-            }),
+-            'currency' => $this->when($this->currency()->exists(), function () {
+-                return new CurrencyResource($this->currency);
+-            }),
++            'items' => $this->when($this->items()->exists(), fn() => InvoiceItemResource::collection($this->items)),
++            'customer' => $this->when($this->customer()->exists(), fn() => new CustomerResource($this->customer)),
++            'taxes' => $this->when($this->taxes()->exists(), fn() => TaxResource::collection($this->taxes)),
++            'fields' => $this->when($this->fields()->exists(), fn() => CustomFieldValueResource::collection($this->fields)),
++            'company' => $this->when($this->company()->exists(), fn() => new CompanyResource($this->company)),
++            'currency' => $this->when($this->currency()->exists(), fn() => new CurrencyResource($this->currency)),
+         ];
+     }
+ }
+    ----------- end diff -----------
+
+Applied rules:
+ * ClosureToArrowFunctionRector
+
+
+71) app/Http/Controllers/V1/Admin/Backup/BackupsController.php:29
+
+    ---------- begin diff ----------
+@@ Line 29 @@
+         try {
+             $backupDestination = BackupDestination::create(config('filesystems.default'), config('backup.backup.name'));
+
+-            $backups = Cache::remember("backups-{$request->file_disk_id}", now()->addSeconds(4), function () use ($backupDestination) {
+-                return $backupDestination
+-                    ->backups()
+-                    ->map(function (Backup $backup) {
+-                        return [
+-                            'path' => $backup->path(),
+-                            'created_at' => $backup->date()->format('Y-m-d H:i:s'),
+-                            'size' => Format::humanReadableSize($backup->size()),
+-                        ];
+-                    })
+-                    ->toArray();
+-            });
++            $backups = Cache::remember("backups-{$request->file_disk_id}", now()->addSeconds(4), fn() => $backupDestination
++                ->backups()
++                ->map(fn(Backup $backup) => [
++                    'path' => $backup->path(),
++                    'created_at' => $backup->date()->format('Y-m-d H:i:s'),
++                    'size' => Format::humanReadableSize($backup->size()),
++                ])
++                ->toArray());
+
+             return response()->json([
+                 'backups' => $backups,
+@@ Line 89 @@
+
+         $backupDestination
+             ->backups()
+-            ->first(function (Backup $backup) use ($validated) {
+-                return $backup->path() === $validated['path'];
+-            })
++            ->first(fn(Backup $backup) => $backup->path() === $validated['path'])
+             ->delete();
+
+         return $this->respondSuccess();
+    ----------- end diff -----------
+
+Applied rules:
+ * ClosureToArrowFunctionRector
+
+
+72) app/Http/Resources/Customer/RecurringInvoiceResource.php:42
+
+    ---------- begin diff ----------
+@@ Line 42 @@
+             'tax' => $this->tax,
+             'due_amount' => $this->due_amount,
+             'template_name' => $this->template_name,
+-            'fields' => $this->when($this->fields()->exists(), function () {
+-                return CustomFieldValueResource::collection($this->fields);
+-            }),
+-            'items' => $this->when($this->items()->exists(), function () {
+-                return InvoiceItemResource::collection($this->items);
+-            }),
+-            'customer' => $this->when($this->customer()->exists(), function () {
+-                return new CustomerResource($this->customer);
+-            }),
+-            'company' => $this->when($this->company()->exists(), function () {
+-                return new CompanyResource($this->company);
+-            }),
+-            'invoices' => $this->when($this->invoices()->exists(), function () {
+-                return InvoiceResource::collection($this->invoices);
+-            }),
+-            'taxes' => $this->when($this->taxes()->exists(), function () {
+-                return TaxResource::collection($this->taxes);
+-            }),
+-            'currency' => $this->when($this->currency()->exists(), function () {
+-                return new CurrencyResource($this->currency);
+-            }),
++            'fields' => $this->when($this->fields()->exists(), fn() => CustomFieldValueResource::collection($this->fields)),
++            'items' => $this->when($this->items()->exists(), fn() => InvoiceItemResource::collection($this->items)),
++            'customer' => $this->when($this->customer()->exists(), fn() => new CustomerResource($this->customer)),
++            'company' => $this->when($this->company()->exists(), fn() => new CompanyResource($this->company)),
++            'invoices' => $this->when($this->invoices()->exists(), fn() => InvoiceResource::collection($this->invoices)),
++            'taxes' => $this->when($this->taxes()->exists(), fn() => TaxResource::collection($this->taxes)),
++            'currency' => $this->when($this->currency()->exists(), fn() => new CurrencyResource($this->currency)),
+         ];
+     }
+ }
+    ----------- end diff -----------
+
+Applied rules:
+ * ClosureToArrowFunctionRector
+
+
+73) app/Http/Resources/Customer/EstimateResource.php:42
+
+    ---------- begin diff ----------
+@@ Line 42 @@
+             'formatted_expiry_date' => $this->formattedExpiryDate,
+             'formatted_estimate_date' => $this->formattedEstimateDate,
+             'estimate_pdf_url' => $this->estimatePdfUrl,
+-            'items' => $this->when($this->items()->exists(), function () {
+-                return EstimateItemResource::collection($this->items);
+-            }),
+-            'customer' => $this->when($this->customer()->exists(), function () {
+-                return new CustomerResource($this->customer);
+-            }),
+-            'taxes' => $this->when($this->taxes()->exists(), function () {
+-                return TaxResource::collection($this->taxes);
+-            }),
+-            'fields' => $this->when($this->fields()->exists(), function () {
+-                return CustomFieldValueResource::collection($this->fields);
+-            }),
+-            'company' => $this->when($this->company()->exists(), function () {
+-                return new CompanyResource($this->company);
+-            }),
+-            'currency' => $this->when($this->currency()->exists(), function () {
+-                return new CurrencyResource($this->currency);
+-            }),
++            'items' => $this->when($this->items()->exists(), fn() => EstimateItemResource::collection($this->items)),
++            'customer' => $this->when($this->customer()->exists(), fn() => new CustomerResource($this->customer)),
++            'taxes' => $this->when($this->taxes()->exists(), fn() => TaxResource::collection($this->taxes)),
++            'fields' => $this->when($this->fields()->exists(), fn() => CustomFieldValueResource::collection($this->fields)),
++            'company' => $this->when($this->company()->exists(), fn() => new CompanyResource($this->company)),
++            'currency' => $this->when($this->currency()->exists(), fn() => new CurrencyResource($this->currency)),
+         ];
+     }
+ }
+    ----------- end diff -----------
+
+Applied rules:
+ * ClosureToArrowFunctionRector
+
+
+74) app/Http/Resources/PaymentResource.php:34
+
+    ---------- begin diff ----------
+@@ Line 34 @@
+             'formatted_created_at' => $this->formattedCreatedAt,
+             'formatted_payment_date' => $this->formattedPaymentDate,
+             'payment_pdf_url' => $this->paymentPdfUrl,
+-            'customer' => $this->when($this->customer()->exists(), function () {
+-                return new CustomerResource($this->customer);
+-            }),
+-            'invoice' => $this->when($this->invoice()->exists(), function () {
+-                return new InvoiceResource($this->invoice);
+-            }),
+-            'payment_method' => $this->when($this->paymentMethod()->exists(), function () {
+-                return new PaymentMethodResource($this->paymentMethod);
+-            }),
+-            'fields' => $this->when($this->fields()->exists(), function () {
+-                return CustomFieldValueResource::collection($this->fields);
+-            }),
+-            'company' => $this->when($this->company()->exists(), function () {
+-                return new CompanyResource($this->company);
+-            }),
+-            'currency' => $this->when($this->currency()->exists(), function () {
+-                return new CurrencyResource($this->currency);
+-            }),
+-            'transaction' => $this->when($this->transaction()->exists(), function () {
+-                return new TransactionResource($this->transaction);
+-            }),
++            'customer' => $this->when($this->customer()->exists(), fn() => new CustomerResource($this->customer)),
++            'invoice' => $this->when($this->invoice()->exists(), fn() => new InvoiceResource($this->invoice)),
++            'payment_method' => $this->when($this->paymentMethod()->exists(), fn() => new PaymentMethodResource($this->paymentMethod)),
++            'fields' => $this->when($this->fields()->exists(), fn() => CustomFieldValueResource::collection($this->fields)),
++            'company' => $this->when($this->company()->exists(), fn() => new CompanyResource($this->company)),
++            'currency' => $this->when($this->currency()->exists(), fn() => new CurrencyResource($this->currency)),
++            'transaction' => $this->when($this->transaction()->exists(), fn() => new TransactionResource($this->transaction)),
+         ];
+     }
+ }
+    ----------- end diff -----------
+
+Applied rules:
+ * ClosureToArrowFunctionRector
+
+
+75) app/Http/Resources/Customer/CustomFieldResource.php:34
+
+    ---------- begin diff ----------
+@@ Line 34 @@
+             'order' => $this->order,
+             'company_id' => $this->company_id,
+             'default_answer' => $this->default_answer,
+-            'company' => $this->when($this->company()->exists(), function () {
+-                return new CompanyResource($this->company);
+-            }),
++            'company' => $this->when($this->company()->exists(), fn() => new CompanyResource($this->company)),
+         ];
+     }
+ }
+    ----------- end diff -----------
+
+Applied rules:
+ * ClosureToArrowFunctionRector
+
+
+76) database/factories/TaxFactory.php:26
+
+    ---------- begin diff ----------
+@@ Line 26 @@
+     {
+         return [
+             'tax_type_id' => TaxType::factory(),
+-            'percent' => function (array $item) {
+-                return TaxType::find($item['tax_type_id'])->percent;
+-            },
+-            'name' => function (array $item) {
+-                return TaxType::find($item['tax_type_id'])->name;
+-            },
++            'percent' => fn(array $item) => TaxType::find($item['tax_type_id'])->percent,
++            'name' => fn(array $item) => TaxType::find($item['tax_type_id'])->name,
+             'company_id' => User::find(1)->companies()->first()->id,
+             'amount' => $this->faker->randomDigitNotNull,
+             'compound_tax' => $this->faker->randomDigitNotNull,
+    ----------- end diff -----------
+
+Applied rules:
+ * ClosureToArrowFunctionRector
+
+
+ [OK] 76 files would have been changed (dry-run) by Rector                      
+

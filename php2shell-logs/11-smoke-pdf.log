@@ -1,0 +1,12 @@
+== [base] create invoice via factory + render PDF (DomPDF)
+hash=pvTIbyA6GvPmEfUYMxudM8jtkZ10oSFyqUpYImmzZHBHvZoDaxtvZXrLDLYC
+GET /invoices/pdf/<hash> -> 200 application/pdf 878835B
+HTTP/
+0
+0
+== [after] create invoice via factory + render PDF (DomPDF)
+hash=NZsyrA6oy7mHw2lSporYzUj9q02MPQEojxxFYzFLNNn7jdvlKlvM5FKhUo7D
+GET /invoices/pdf/<hash> -> 200 application/pdf 878874B
+HTTP/
+0
+0

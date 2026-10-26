@@ -1,0 +1,24 @@
+Loading composer repositories with package information
+Updating dependencies
+Lock file operations: 2 installs, 3 updates, 0 removals
+  - Locking carbonphp/carbon-doctrine-types (1.0.1)
+  - Upgrading facade/flare-client-php (1.9.1 => 1.10.0)
+  - Upgrading facade/ignition (2.17.5 => 2.17.7)
+  - Upgrading nesbot/carbon (2.58.0 => 2.73.0)
+  - Locking psr/clock (1.0.0)
+Writing lock file
+Installing dependencies from lock file (including require-dev)
+Package operations: 2 installs, 3 updates, 0 removals
+  - Upgrading nesbot/carbon (2.58.0 => 2.73.0): Extracting archive
+  - Upgrading facade/flare-client-php (1.9.1 => 1.10.0): Extracting archive
+  - Upgrading facade/ignition (2.17.5 => 2.17.7): Extracting archive
+Package swiftmailer/swiftmailer is abandoned, you should avoid using it. Use symfony/mailer instead.
+Generating optimized autoload files
+> Illuminate\Foundation\ComposerScripts::postAutoloadDump
+> @php artisan package:discover --ansi
+[32mPackage manifest generated successfully.[39m
+109 packages you are using are looking for funding.
+Use the `composer fund` command to find out more!
+Found 74 security vulnerability advisories affecting 19 packages.
+Run "composer audit" for a full list of advisories.
+UPDATE_EXIT=0

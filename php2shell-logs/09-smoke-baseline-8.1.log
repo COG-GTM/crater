@@ -1,0 +1,42 @@
+== image: crater-php:baseline-8.1 (sha256:89ba5d490be1851fe37995c83a294448460f07199fa11d66daffba4d40992e7d)
+PHP 8.1.34 (cli) (built: Dec 29 2025 23:35:14) (NTS)
+PHP 8.1.34 (fpm-fcgi) (built: Dec 29 2025 23:35:16)
+== FPM effective ini (via conf.d mount)
+session.upload_progress.enabled='1'
+post_max_size='64M'
+upload_max_filesize='64M'
+display_errors='1'
+== migrate --seed
+Seeding: Database\Seeders\UsersTableSeeder
+Seeded:  Database\Seeders\UsersTableSeeder (169.56ms)
+Database seeding completed successfully.
+touch: cannot touch 'storage/app/database_created': Permission denied
+option	value
+profile_complete	COMPLETED
+== HTTP checks
+GET /                        200 1408B deprec_in_body=0
+GET /login                   200 1408B deprec_in_body=0
+GET /api/v1/app/version      200 19B deprec_in_body=0
+GET /installation            302 354B deprec_in_body=0
+== login API (admin@craterapp.com) + authenticated bootstrap
+POST /login -> 204
+GET /api/v1/bootstrap        200 66526B json_ok=1 deprec_in_body=0
+GET /api/v1/customers        200 533B json_ok=1 deprec_in_body=0
+GET /api/v1/invoices         200 528B json_ok=1 deprec_in_body=0
+GET /api/v1/dashboard        200 491B json_ok=1 deprec_in_body=0
+== PDF render (invoice 1)
+GET /invoices/pdf/<hash> (no seeded invoice)
+== schedule:run (cron entrypoint path)
+No scheduled commands are ready to run.
+== laravel.log fatals/deprecations
+0
+== php-fpm container log
+172.19.0.4 -  26/Oct/2026:14:57:48 +0000 "GET /index.php" 200
+172.19.0.4 -  26/Oct/2026:14:57:48 +0000 "GET /index.php" 302
+172.19.0.4 -  26/Oct/2026:14:57:48 +0000 "GET /index.php" 204
+172.19.0.4 -  26/Oct/2026:14:57:48 +0000 "POST /index.php" 204
+172.19.0.4 -  26/Oct/2026:14:57:48 +0000 "GET /index.php" 200
+172.19.0.4 -  26/Oct/2026:14:57:48 +0000 "GET /index.php" 200
+172.19.0.4 -  26/Oct/2026:14:57:48 +0000 "GET /index.php" 200
+172.19.0.4 -  26/Oct/2026:14:57:48 +0000 "GET /index.php" 200
+== nginx error log

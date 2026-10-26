@@ -1,0 +1,401 @@
+PHP 8.2.35 (cli) (built: Oct 21 2026 16:03:01) (NTS)
+Copyright (c) The PHP Group
+Zend Engine v4.2.35, Copyright (c) Zend Technologies
+    with Zend OPcache v8.2.35, Copyright (c), by Zend Technologies
+PHP 8.2.35 (fpm-fcgi) (built: Oct 21 2026 16:03:03)
+Discovered Package: [32mspatie/laravel-medialibrary[39m
+Discovered Package: [32mvinkla/hashids[39m
+[32mPackage manifest generated successfully.[39m
+109 packages you are using are looking for funding.
+Use the `composer fund` command to find out more!
+== check-platform-reqs
+Checking platform requirements for packages in the vendor dir
+composer-plugin-api 2.9.0      success                                       
+ext-ctype           *          success provided by symfony/polyfill-ctype    
+ext-curl            8.2.35     success                                       
+ext-dom             20031129   success                                       
+ext-exif            8.2.35     success                                       
+ext-fileinfo        8.2.35     success                                       
+ext-filter          8.2.35     success                                       
+ext-iconv           *          success provided by symfony/polyfill-iconv    
+ext-json            8.2.35     success                                       
+ext-libxml          8.2.35     success                                       
+ext-mbstring        *          success provided by symfony/polyfill-mbstring 
+ext-openssl         8.2.35     success                                       
+ext-pcre            8.2.35     success                                       
+ext-pdo             8.2.35     success                                       
+ext-phar            8.2.35     success                                       
+ext-reflection      8.2.35     success                                       
+ext-simplexml       8.2.35     success                                       
+ext-tokenizer       8.2.35     success                                       
+ext-xml             8.2.35     success                                       
+ext-xmlwriter       8.2.35     success                                       
+ext-zip             1.21.1     success                                       
+lib-pcre            10.40      success                                       
+php                 8.2.35     success                                       
+CPR_EXIT=0
+**************************************
+*     Application In Production!     *
+**************************************
+
+ Do you really wish to run this command? (yes/no) [no]:
+ > Command Canceled!
+
+  [30;42;1m PASS [39;49;22m[39m Tests\Unit\AddressTest[39m
+  [32;1m✓[39;22m[39m [2man address belongs to user[22m[39m
+  [32;1m✓[39;22m[39m [2man address belongs to country[22m[39m
+  [32;1m✓[39;22m[39m [2man address belongs to customer[22m[39m
+
+  [30;42;1m PASS [39;49;22m[39m Tests\Unit\CompanySettingTest[39m
+  [32;1m✓[39;22m[39m [2mcompany setting belongs to company[22m[39m
+  [32;1m✓[39;22m[39m [2mset settings[22m[39m
+  [32;1m✓[39;22m[39m [2mget settings[22m[39m
+
+  [30;42;1m PASS [39;49;22m[39m Tests\Unit\CompanyTest[39m
+  [32;1m✓[39;22m[39m [2mcompany has many customers[22m[39m
+  [32;1m✓[39;22m[39m [2mcompany has many company settings[22m[39m
+  [32;1m✓[39;22m[39m [2ma company belongs to many users[22m[39m
+
+  [30;42;1m PASS [39;49;22m[39m Tests\Unit\CountryTest[39m
+  [32;1m✓[39;22m[39m [2mcountry has many addresses[22m[39m
+
+  [30;42;1m PASS [39;49;22m[39m Tests\Unit\CustomFieldTest[39m
+  [32;1m✓[39;22m[39m [2mcustom field belongs to company[22m[39m
+  [32;1m✓[39;22m[39m [2mcustom field has many custom field value[22m[39m
+
+  [30;42;1m PASS [39;49;22m[39m Tests\Unit\CustomFieldValueTest[39m
+  [32;1m✓[39;22m[39m [2mcustom field value belongs to company[22m[39m
+  [32;1m✓[39;22m[39m [2mcustom field value belongs to custom field[22m[39m
+
+  [30;42;1m PASS [39;49;22m[39m Tests\Unit\CustomerTest[39m
+  [32;1m✓[39;22m[39m [2mcustomer has many estimates[22m[39m
+  [32;1m✓[39;22m[39m [2mcustomer has many expenses[22m[39m
+  [32;1m✓[39;22m[39m [2mcustomer has many invoices[22m[39m
+  [32;1m✓[39;22m[39m [2mcustomer has many payments[22m[39m
+  [32;1m✓[39;22m[39m [2mcustomer has many addresses[22m[39m
+  [32;1m✓[39;22m[39m [2mcustomer belongs to currency[22m[39m
+  [32;1m✓[39;22m[39m [2mcustomer belongs to company[22m[39m
+  [32;1m✓[39;22m[39m [2mit customer has one billing address[22m[39m
+  [32;1m✓[39;22m[39m [2mit customer has one shipping address[22m[39m
+
+  [30;42;1m PASS [39;49;22m[39m Tests\Unit\EstimateItemTest[39m
+  [32;1m✓[39;22m[39m [2mestimate item belongs to estimate[22m[39m
+  [32;1m✓[39;22m[39m [2mestimate item belongs to item[22m[39m
+  [32;1m✓[39;22m[39m [2mestimate item has many taxes[22m[39m
+
+  [30;42;1m PASS [39;49;22m[39m Tests\Unit\EstimateTest[39m
+  [32;1m✓[39;22m[39m [2mestimate has many estimate items[22m[39m
+  [32;1m✓[39;22m[39m [2mestimate belongs to customer[22m[39m
+  [32;1m✓[39;22m[39m [2mestimate has many taxes[22m[39m
+  [32;1m✓[39;22m[39m [2mcreate estimate[22m[39m
+  [32;1m✓[39;22m[39m [2mupdate estimate[22m[39m
+  [32;1m✓[39;22m[39m [2mcreate items[22m[39m
+  [32;1m✓[39;22m[39m [2mcreate taxes[22m[39m
+
+  [30;42;1m PASS [39;49;22m[39m Tests\Unit\ExchangeRateLogTest[39m
+  [32;1m✓[39;22m[39m [2man exchange rate log belongs to company[22m[39m
+  [32;1m✓[39;22m[39m [2madd exchange rate log[22m[39m
+
+  [30;42;1m PASS [39;49;22m[39m Tests\Unit\ExpenseCategoryTest[39m
+  [32;1m✓[39;22m[39m [2mexpense category has many expenses[22m[39m
+
+  [30;42;1m PASS [39;49;22m[39m Tests\Unit\ExpenseTest[39m
+  [32;1m✓[39;22m[39m [2mexpense belongs to category[22m[39m
+  [32;1m✓[39;22m[39m [2mexpense belongs to customer[22m[39m
+  [32;1m✓[39;22m[39m [2mexpense belongs to company[22m[39m
+
+  [30;42;1m PASS [39;49;22m[39m Tests\Unit\InvoiceItemTest[39m
+  [32;1m✓[39;22m[39m [2minvoice item belongs to invoice[22m[39m
+  [32;1m✓[39;22m[39m [2minvoice item belongs to item[22m[39m
+  [32;1m✓[39;22m[39m [2minvoice item has many taxes[22m[39m
+
+  [30;42;1m PASS [39;49;22m[39m Tests\Unit\InvoiceTest[39m
+  [32;1m✓[39;22m[39m [2minvoice has many invoice items[22m[39m
+  [32;1m✓[39;22m[39m [2minvoice has many taxes[22m[39m
+  [32;1m✓[39;22m[39m [2minvoice has many payments[22m[39m
+  [32;1m✓[39;22m[39m [2minvoice belongs to customer[22m[39m
+  [32;1m✓[39;22m[39m [2mget previous status[22m[39m
+  [32;1m✓[39;22m[39m [2mcreate invoice[22m[39m
+  [32;1m✓[39;22m[39m [2mupdate invoice[22m[39m
+  [32;1m✓[39;22m[39m [2mcreate items[22m[39m
+  [32;1m✓[39;22m[39m [2mcreate taxes[22m[39m
+
+  [30;42;1m PASS [39;49;22m[39m Tests\Unit\ItemTest[39m
+  [32;1m✓[39;22m[39m [2man item belongs to unit[22m[39m
+  [32;1m✓[39;22m[39m [2man item has many taxes[22m[39m
+  [32;1m✓[39;22m[39m [2man item has many invoice items[22m[39m
+  [32;1m✓[39;22m[39m [2man item has many estimate items[22m[39m
+
+  [30;42;1m PASS [39;49;22m[39m Tests\Unit\PaymentMethodTest[39m
+  [32;1m✓[39;22m[39m [2mpayment method has many payment[22m[39m
+  [32;1m✓[39;22m[39m [2mpayment method belongs to company[22m[39m
+
+  [30;42;1m PASS [39;49;22m[39m Tests\Unit\PaymentTest[39m
+  [32;1m✓[39;22m[39m [2mpayment belongs to invoice[22m[39m
+  [32;1m✓[39;22m[39m [2mpayment belongs to customer[22m[39m
+  [32;1m✓[39;22m[39m [2mpayment belongs to payment method[22m[39m
+
+  [30;42;1m PASS [39;49;22m[39m Tests\Unit\RecurringInvoiceTest[39m
+  [32;1m✓[39;22m[39m [2mrecurring invoice has many invoices[22m[39m
+  [32;1m✓[39;22m[39m [2mrecurring invoice has many invoice items[22m[39m
+  [32;1m✓[39;22m[39m [2mrecurring invoice has many taxes[22m[39m
+  [32;1m✓[39;22m[39m [2mrecurring invoice belongs to customer[22m[39m
+
+  [30;42;1m PASS [39;49;22m[39m Tests\Unit\SettingTest[39m
+  [32;1m✓[39;22m[39m [2mset setting[22m[39m
+
+  [30;42;1m PASS [39;49;22m[39m Tests\Unit\TaxTest[39m
+  [32;1m✓[39;22m[39m [2mtax belongs to tax type[22m[39m
+  [32;1m✓[39;22m[39m [2mtax belongs to invoice[22m[39m
+  [32;1m✓[39;22m[39m [2mtax belongs to recurring invoice[22m[39m
+  [32;1m✓[39;22m[39m [2mtax belongs to estimate[22m[39m
+  [32;1m✓[39;22m[39m [2mtax belongs to invoice item[22m[39m
+  [32;1m✓[39;22m[39m [2mtax belongs to estimate item[22m[39m
+  [32;1m✓[39;22m[39m [2mtax belongs to item[22m[39m
+
+  [30;42;1m PASS [39;49;22m[39m Tests\Unit\TaxTypeTest[39m
+  [32;1m✓[39;22m[39m [2mtax type has many taxes[22m[39m
+
+  [30;42;1m PASS [39;49;22m[39m Tests\Unit\UnitTest[39m
+  [32;1m✓[39;22m[39m [2munit has many items[22m[39m
+  [32;1m✓[39;22m[39m [2munit belongs to company[22m[39m
+
+  [30;42;1m PASS [39;49;22m[39m Tests\Unit\UserTest[39m
+  [32;1m✓[39;22m[39m [2muser belongs to currency[22m[39m
+  [32;1m✓[39;22m[39m [2muser belongs to many companies[22m[39m
+
+  [30;42;1m PASS [39;49;22m[39m Tests\Feature\Admin\BackupTest[39m
+  [32;1m✓[39;22m[39m [2mget backups[22m[39m
+  [32;1m✓[39;22m[39m [2mcreate backup[22m[39m
+
+  [30;42;1m PASS [39;49;22m[39m Tests\Feature\Admin\CompanySettingTest[39m
+  [32;1m✓[39;22m[39m [2mget profile[22m[39m
+  [32;1m✓[39;22m[39m [2mupdate profile using a form request[22m[39m
+  [32;1m✓[39;22m[39m [2mupdate profile[22m[39m
+  [32;1m✓[39;22m[39m [2mupdate company using a form request[22m[39m
+  [32;1m✓[39;22m[39m [2mupdate company[22m[39m
+  [32;1m✓[39;22m[39m [2mupdate settings[22m[39m
+  [32;1m✓[39;22m[39m [2mupdate settings without currency setting[22m[39m
+  [32;1m✓[39;22m[39m [2mupdate currency settings after company has currency and transactions is not allowed[22m[39m
+  [32;1m✓[39;22m[39m [2mget notification email settings[22m[39m
+
+  [30;42;1m PASS [39;49;22m[39m Tests\Feature\Admin\CompanyTest[39m
+  [32;1m✓[39;22m[39m [2mstore user using a form request[22m[39m
+  [32;1m✓[39;22m[39m [2mstore company[22m[39m
+  [32;1m✓[39;22m[39m [2mdelete company[22m[39m
+  [32;1m✓[39;22m[39m [2mtransfer ownership[22m[39m
+  [32;1m✓[39;22m[39m [2mget companies[22m[39m
+
+  [30;42;1m PASS [39;49;22m[39m Tests\Feature\Admin\ConfigTest[39m
+  [32;1m✓[39;22m[39m [2mget all languages[22m[39m
+  [32;1m✓[39;22m[39m [2mget all fiscal years[22m[39m
+  [32;1m✓[39;22m[39m [2mget all convert estimate options[22m[39m
+  [32;1m✓[39;22m[39m [2mget all retrospective edits[22m[39m
+  [32;1m✓[39;22m[39m [2mget all currency converter servers[22m[39m
+  [32;1m✓[39;22m[39m [2mget all exchange rate drivers[22m[39m
+  [32;1m✓[39;22m[39m [2mget all custom field models[22m[39m
+
+  [30;42;1m PASS [39;49;22m[39m Tests\Feature\Admin\CurrenciesTest[39m
+  [32;1m✓[39;22m[39m [2mget all used currencies[22m[39m
+
+  [30;42;1m PASS [39;49;22m[39m Tests\Feature\Admin\CustomFieldTest[39m
+  [32;1m✓[39;22m[39m [2mget custom fields[22m[39m
+  [32;1m✓[39;22m[39m [2mcreate custom field[22m[39m
+  [32;1m✓[39;22m[39m [2mstore validates using a form request[22m[39m
+  [32;1m✓[39;22m[39m [2mupdate custom field[22m[39m
+  [32;1m✓[39;22m[39m [2mupdate validates using a form request[22m[39m
+  [32;1m✓[39;22m[39m [2mdelete custom field[22m[39m
+
+  [30;42;1m PASS [39;49;22m[39m Tests\Feature\Admin\CustomerTest[39m
+  [32;1m✓[39;22m[39m [2mget customers[22m[39m
+  [32;1m✓[39;22m[39m [2mcustomer stats[22m[39m
+  [32;1m✓[39;22m[39m [2mcreate customer[22m[39m
+  [32;1m✓[39;22m[39m [2mstore validates using a form request[22m[39m
+  [32;1m✓[39;22m[39m [2mget customer[22m[39m
+  [32;1m✓[39;22m[39m [2mupdate customer[22m[39m
+  [32;1m✓[39;22m[39m [2mupdate validates using a form request[22m[39m
+  [32;1m✓[39;22m[39m [2msearch customers[22m[39m
+  [32;1m✓[39;22m[39m [2mdelete multiple customer[22m[39m
+
+  [30;42;1m PASS [39;49;22m[39m Tests\Feature\Admin\DashboardTest[39m
+  [32;1m✓[39;22m[39m [2mgetJson 'api/v1/dashboard' → assertOk [22m[39m
+  [32;1m✓[39;22m[39m [2mgetJson 'api/v1/search?name=ab' → assertOk [22m[39m
+
+  [30;42;1m PASS [39;49;22m[39m Tests\Feature\Admin\EstimateTest[39m
+  [32;1m✓[39;22m[39m [2mget estimates[22m[39m
+  [32;1m✓[39;22m[39m [2mcreate estimate[22m[39m
+  [32;1m✓[39;22m[39m [2mstore validates using a form request[22m[39m
+  [32;1m✓[39;22m[39m [2mupdate estimate[22m[39m
+  [32;1m✓[39;22m[39m [2mupdate validates using a form request[22m[39m
+  [32;1m✓[39;22m[39m [2msearch estimates[22m[39m
+  [32;1m✓[39;22m[39m [2msend estimate using a form request[22m[39m
+  [32;1m✓[39;22m[39m [2msend estimate to customer[22m[39m
+  [32;1m✓[39;22m[39m [2mestimate mark as accepted[22m[39m
+  [32;1m✓[39;22m[39m [2mestimate mark as rejected[22m[39m
+  [32;1m✓[39;22m[39m [2mcreate invoice from estimate[22m[39m
+  [32;1m✓[39;22m[39m [2mdelete multiple estimates using a form request[22m[39m
+  [32;1m✓[39;22m[39m [2mdelete multiple estimates[22m[39m
+  [32;1m✓[39;22m[39m [2mget estimate templates[22m[39m
+  [32;1m✓[39;22m[39m [2mcreate estimate with tax per item[22m[39m
+  [32;1m✓[39;22m[39m [2mcreate estimate with EUR currency[22m[39m
+  [32;1m✓[39;22m[39m [2mupdate estimate with EUR currency[22m[39m
+
+  [30;42;1m PASS [39;49;22m[39m Tests\Feature\Admin\ExpenseCategoryTest[39m
+  [32;1m✓[39;22m[39m [2mget categories[22m[39m
+  [32;1m✓[39;22m[39m [2mcreate category[22m[39m
+  [32;1m✓[39;22m[39m [2mstore validates using a form request[22m[39m
+  [32;1m✓[39;22m[39m [2mget category[22m[39m
+  [32;1m✓[39;22m[39m [2mupdate category[22m[39m
+  [32;1m✓[39;22m[39m [2mupdate validates using a form request[22m[39m
+  [32;1m✓[39;22m[39m [2mdelete category[22m[39m
+
+  [30;42;1m PASS [39;49;22m[39m Tests\Feature\Admin\ExpenseTest[39m
+  [32;1m✓[39;22m[39m [2mget expenses[22m[39m
+  [32;1m✓[39;22m[39m [2mcreate expense[22m[39m
+  [32;1m✓[39;22m[39m [2mstore validates using a form request[22m[39m
+  [32;1m✓[39;22m[39m [2mget expense data[22m[39m
+  [32;1m✓[39;22m[39m [2mupdate expense[22m[39m
+  [32;1m✓[39;22m[39m [2mupdate validates using a form request[22m[39m
+  [32;1m✓[39;22m[39m [2msearch expenses[22m[39m
+  [32;1m✓[39;22m[39m [2mdelete multiple expenses[22m[39m
+  [32;1m✓[39;22m[39m [2mupdate expense with EUR currency[22m[39m
+
+  [30;42;1m PASS [39;49;22m[39m Tests\Feature\Admin\FileDiskTest[39m
+  [32;1m✓[39;22m[39m [2mget file disks[22m[39m
+  [32;1m✓[39;22m[39m [2mcreate file disk[22m[39m
+  [32;1m✓[39;22m[39m [2mupdate file disk[22m[39m
+  [32;1m✓[39;22m[39m [2mget disk[22m[39m
+  [32;1m✓[39;22m[39m [2mget drivers[22m[39m
+
+  [30;42;1m PASS [39;49;22m[39m Tests\Feature\Admin\InvoiceTest[39m
+  [32;1m✓[39;22m[39m [2mtestGetInvoices[22m[39m
+  [32;1m✓[39;22m[39m [2mcreate invoice[22m[39m
+  [32;1m✓[39;22m[39m [2mcreate invoice as sent[22m[39m
+  [32;1m✓[39;22m[39m [2mstore validates using a form request[22m[39m
+  [32;1m✓[39;22m[39m [2mupdate invoice[22m[39m
+  [32;1m✓[39;22m[39m [2mupdate validates using a form request[22m[39m
+  [32;1m✓[39;22m[39m [2msend invoice to customer[22m[39m
+  [32;1m✓[39;22m[39m [2minvoice mark as paid[22m[39m
+  [32;1m✓[39;22m[39m [2minvoice mark as sent[22m[39m
+  [32;1m✓[39;22m[39m [2msearch invoices[22m[39m
+  [32;1m✓[39;22m[39m [2mdelete multiple invoices[22m[39m
+  [32;1m✓[39;22m[39m [2mclone invoice[22m[39m
+  [32;1m✓[39;22m[39m [2mcreate invoice with negative tax[22m[39m
+  [32;1m✓[39;22m[39m [2mcreate invoice with tax per item[22m[39m
+  [32;1m✓[39;22m[39m [2mcreate invoice with EUR currency[22m[39m
+  [32;1m✓[39;22m[39m [2mupdate invoice with EUR currency[22m[39m
+
+  [30;42;1m PASS [39;49;22m[39m Tests\Feature\Admin\ItemTest[39m
+  [32;1m✓[39;22m[39m [2mget items[22m[39m
+  [32;1m✓[39;22m[39m [2mcreate item[22m[39m
+  [32;1m✓[39;22m[39m [2mstore validates using a form request[22m[39m
+  [32;1m✓[39;22m[39m [2mget item[22m[39m
+  [32;1m✓[39;22m[39m [2mupdate item[22m[39m
+  [32;1m✓[39;22m[39m [2mupdate validates using a form request[22m[39m
+  [32;1m✓[39;22m[39m [2mdelete multiple items[22m[39m
+  [32;1m✓[39;22m[39m [2msearch items[22m[39m
+
+  [30;42;1m PASS [39;49;22m[39m Tests\Feature\Admin\LocationTest[39m
+  [32;1m✓[39;22m[39m [2mget countries[22m[39m
+
+  [30;42;1m PASS [39;49;22m[39m Tests\Feature\Admin\NextNumberTest[39m
+  [32;1m✓[39;22m[39m [2mnext number[22m[39m
+
+  [30;42;1m PASS [39;49;22m[39m Tests\Feature\Admin\NotesTest[39m
+  [32;1m✓[39;22m[39m [2mretrieve notes[22m[39m
+  [32;1m✓[39;22m[39m [2mcreate note[22m[39m
+  [32;1m✓[39;22m[39m [2mretrieve note[22m[39m
+  [32;1m✓[39;22m[39m [2mupdate note[22m[39m
+  [32;1m✓[39;22m[39m [2mdelete note[22m[39m
+
+  [30;42;1m PASS [39;49;22m[39m Tests\Feature\Admin\PaymentMethodTest[39m
+  [32;1m✓[39;22m[39m [2mget payment methods[22m[39m
+  [32;1m✓[39;22m[39m [2mcreate payment method[22m[39m
+  [32;1m✓[39;22m[39m [2mstore validates using a form request[22m[39m
+  [32;1m✓[39;22m[39m [2mget payment method[22m[39m
+  [32;1m✓[39;22m[39m [2mupdate payment method[22m[39m
+  [32;1m✓[39;22m[39m [2mupdate validates using a form request[22m[39m
+  [32;1m✓[39;22m[39m [2mdelete payment method[22m[39m
+
+  [30;42;1m PASS [39;49;22m[39m Tests\Feature\Admin\PaymentTest[39m
+  [32;1m✓[39;22m[39m [2mget payments[22m[39m
+  [32;1m✓[39;22m[39m [2mget payment[22m[39m
+  [32;1m✓[39;22m[39m [2mcreate payment[22m[39m
+  [32;1m✓[39;22m[39m [2mstore validates using a form request[22m[39m
+  [32;1m✓[39;22m[39m [2mupdate payment[22m[39m
+  [32;1m✓[39;22m[39m [2mupdate validates using a form request[22m[39m
+  [32;1m✓[39;22m[39m [2msearch payments[22m[39m
+  [32;1m✓[39;22m[39m [2msend payment to customer[22m[39m
+  [32;1m✓[39;22m[39m [2mdelete payment[22m[39m
+  [32;1m✓[39;22m[39m [2mcreate payment without invoice[22m[39m
+  [32;1m✓[39;22m[39m [2mcreate payment with invoice[22m[39m
+  [32;1m✓[39;22m[39m [2mcreate payment with partially paid[22m[39m
+
+  [30;42;1m PASS [39;49;22m[39m Tests\Feature\Admin\RecurringInvoiceTest[39m
+  [32;1m✓[39;22m[39m [2mget recurring invoices[22m[39m
+  [32;1m✓[39;22m[39m [2mstore user using a form request[22m[39m
+  [32;1m✓[39;22m[39m [2mstore recurring invoice[22m[39m
+  [32;1m✓[39;22m[39m [2mget recurring invoice[22m[39m
+  [32;1m✓[39;22m[39m [2mupdate user using a form request[22m[39m
+  [32;1m✓[39;22m[39m [2mupdate recurring invoice[22m[39m
+  [32;1m✓[39;22m[39m [2mdelete multiple recurring invoice[22m[39m
+  [32;1m✓[39;22m[39m [2mcalculate frequency for recurring invoice[22m[39m
+
+  [30;42;1m PASS [39;49;22m[39m Tests\Feature\Admin\RoleTest[39m
+  [32;1m✓[39;22m[39m [2mcreate super admin role[22m[39m
+
+  [30;42;1m PASS [39;49;22m[39m Tests\Feature\Admin\TaxTypeTest[39m
+  [32;1m✓[39;22m[39m [2mget tax types[22m[39m
+  [32;1m✓[39;22m[39m [2mcreate tax type[22m[39m
+  [32;1m✓[39;22m[39m [2mstore validates using a form request[22m[39m
+  [32;1m✓[39;22m[39m [2mget tax type[22m[39m
+  [32;1m✓[39;22m[39m [2mupdate tax type[22m[39m
+  [32;1m✓[39;22m[39m [2mupdate validates using a form request[22m[39m
+  [32;1m✓[39;22m[39m [2mdelete tax type[22m[39m
+  [32;1m✓[39;22m[39m [2mcreate negative tax type[22m[39m
+
+  [30;42;1m PASS [39;49;22m[39m Tests\Feature\Admin\UnitTest[39m
+  [32;1m✓[39;22m[39m [2mget units[22m[39m
+  [32;1m✓[39;22m[39m [2mcreate unit[22m[39m
+  [32;1m✓[39;22m[39m [2mstore validates using a form request[22m[39m
+  [32;1m✓[39;22m[39m [2mget unit[22m[39m
+  [32;1m✓[39;22m[39m [2mupdate unit[22m[39m
+  [32;1m✓[39;22m[39m [2mupdate validates using a form request[22m[39m
+  [32;1m✓[39;22m[39m [2mdelete unit[22m[39m
+
+  [30;42;1m PASS [39;49;22m[39m Tests\Feature\Admin\UserTest[39m
+  [32;1m✓[39;22m[39m [2mgetJson '/api/v1/users' → assertOk [22m[39m
+  [32;1m✓[39;22m[39m [2mstore user using a form request[22m[39m
+  [32;1m✓[39;22m[39m [2mget user[22m[39m
+  [32;1m✓[39;22m[39m [2mupdate user using a form request[22m[39m
+
+  [30;42;1m PASS [39;49;22m[39m Tests\Feature\Customer\DashboardTest[39m
+  [32;1m✓[39;22m[39m [2mcustomer dashboard[22m[39m
+
+  [30;42;1m PASS [39;49;22m[39m Tests\Feature\Customer\EstimateTest[39m
+  [32;1m✓[39;22m[39m [2mget customer estimates[22m[39m
+  [32;1m✓[39;22m[39m [2mget customer estimate[22m[39m
+  [32;1m✓[39;22m[39m [2mcustomer estimate mark as accepted[22m[39m
+  [32;1m✓[39;22m[39m [2mcustomer estimate mark as rejected[22m[39m
+
+  [30;42;1m PASS [39;49;22m[39m Tests\Feature\Customer\ExpenseTest[39m
+  [32;1m✓[39;22m[39m [2mget customer expenses[22m[39m
+  [32;1m✓[39;22m[39m [2mget customer expense[22m[39m
+
+  [30;42;1m PASS [39;49;22m[39m Tests\Feature\Customer\InvoiceTest[39m
+  [32;1m✓[39;22m[39m [2mget customer invoices[22m[39m
+  [32;1m✓[39;22m[39m [2mget customer invoice[22m[39m
+
+  [30;42;1m PASS [39;49;22m[39m Tests\Feature\Customer\PaymentTest[39m
+  [32;1m✓[39;22m[39m [2mget customer payments[22m[39m
+  [32;1m✓[39;22m[39m [2mget customer payment[22m[39m
+
+  [30;42;1m PASS [39;49;22m[39m Tests\Feature\Customer\ProfileTest[39m
+  [32;1m✓[39;22m[39m [2mupdate customer profile using a form request[22m[39m
+  [32;1m✓[39;22m[39m [2mupdate customer profile[22m[39m
+  [32;1m✓[39;22m[39m [2mget customer[22m[39m
+
+  [37;1mTests:  [39;22m[32;1m248 passed[39;22m
+  [37;1mTime:   [39;22m[39m37.20s[39m
+
+PEST_EXIT=0

@@ -1,0 +1,114 @@
+################ crater-php:baseline-8.1  ->  crater-php:after-8.2
+== crater-php:baseline-8.1: sha256:89ba5d490be1851fe37995c83a294448460f07199fa11d66daffba4d40992e7d
+PHP 8.1.34 (cli) (built: Dec 29 2025 23:35:14) (NTS)
+PHP 8.1.34 (fpm-fcgi) (built: Dec 29 2025 23:35:16)
+OS: Debian GNU/Linux 13 (trixie)
+== crater-php:after-8.2: sha256:87f609c4ed71bac29830eac6b243320dc49ebce120275184a2d2ecf1869ebe74
+PHP 8.2.35 (cli) (built: Oct 21 2026 16:03:01) (NTS)
+PHP 8.2.35 (fpm-fcgi) (built: Oct 21 2026 16:03:03)
+OS: Debian GNU/Linux 13 (trixie)
+--- php -m diff (- old, + new)
+- ftp
++ random
+--- key php -i values
+[crater-php:baseline-8.1]
+Loaded Configuration File => (none)
+Scan this dir for additional .ini files => /usr/local/etc/php/conf.d
+Additional .ini files parsed => /usr/local/etc/php/conf.d/docker-fpm.ini,
+display_errors => STDOUT => STDOUT
+error_reporting => no value => no value
+expose_php => On => On
+max_execution_time => 0 => 0
+memory_limit => 128M => 128M
+post_max_size => 8M => 8M
+upload_max_filesize => 2M => 2M
+zend.assertions => 1 => 1
+cURL Information => 8.14.1
+libxml Version => 2.9.14
+GD Version => bundled (2.1.0 compatible)
+libPNG Version => 1.6.48
+imagick module version => 3.8.1
+OpenSSL Library Version => OpenSSL 3.5.4 30 Sep 2025
+PCRE Library Version => 10.39 2021-10-29
+SQLite Library => 3.46.1
+session.upload_progress.enabled => On => On
+SQLite Library => 3.46.1
+libxml2 Version => 2.9.14
+[crater-php:after-8.2]
+Loaded Configuration File => (none)
+Scan this dir for additional .ini files => /usr/local/etc/php/conf.d
+Additional .ini files parsed => /usr/local/etc/php/conf.d/docker-fpm.ini,
+display_errors => STDOUT => STDOUT
+error_reporting => no value => no value
+expose_php => On => On
+max_execution_time => 0 => 0
+memory_limit => 128M => 128M
+post_max_size => 8M => 8M
+upload_max_filesize => 2M => 2M
+zend.assertions => 1 => 1
+cURL Information => 8.14.1
+libxml Version => 2.9.14
+GD Version => bundled (2.1.0 compatible)
+libPNG Version => 1.6.48
+imagick module version => 3.8.1
+OpenSSL Library Version => OpenSSL 3.5.7 9 Jun 2026
+PCRE Library Version => 10.40 2022-04-14
+SQLite Library => 3.46.1
+session.upload_progress.enabled => On => On
+SQLite Library => 3.46.1
+libxml2 Version => 2.9.14
+################ crater-cron:baseline-8.0  ->  crater-cron:after-8.2
+== crater-cron:baseline-8.0: sha256:b473fed02db213461af99b11e566c292490ea05fc141dd915acb9ad88b275618
+PHP 8.0.30 (cli) (built: Oct 21 2023 06:17:34) ( NTS )
+PHP 8.0.30 (fpm-fcgi) (built: Oct 21 2023 06:17:37)
+OS: Alpine Linux v3.16
+== crater-cron:after-8.2: sha256:f9fb25b44b4a977456b6e0617da6e4791f6ff8a81dc561b209d49e0382af8da1
+PHP 8.2.35 (cli) (built: Oct 21 2026 22:54:10) (NTS)
+PHP 8.2.35 (fpm-fcgi) (built: Oct 21 2026 22:54:13)
+OS: Alpine Linux v3.24
+--- php -m diff (- old, + new)
+- ftp
++ random
++ Zend OPcache
++ Zend OPcache
+--- key php -i values
+[crater-cron:baseline-8.0]
+Loaded Configuration File => (none)
+Scan this dir for additional .ini files => /usr/local/etc/php/conf.d
+Additional .ini files parsed => /usr/local/etc/php/conf.d/docker-fpm.ini,
+display_errors => STDOUT => STDOUT
+error_reporting => no value => no value
+expose_php => On => On
+max_execution_time => 0 => 0
+memory_limit => 128M => 128M
+post_max_size => 8M => 8M
+upload_max_filesize => 2M => 2M
+zend.assertions => 1 => 1
+cURL Information => 8.4.0
+libxml Version => 2.9.14
+OpenSSL Library Version => OpenSSL 1.1.1w  11 Sep 2023
+PCRE Library Version => 10.35 2020-05-09
+SQLite Library => 3.40.1
+session.upload_progress.enabled => On => On
+SQLite Library => 3.40.1
+libxml2 Version => 2.9.14
+[crater-cron:after-8.2]
+Loaded Configuration File => (none)
+Scan this dir for additional .ini files => /usr/local/etc/php/conf.d
+Additional .ini files parsed => /usr/local/etc/php/conf.d/docker-fpm.ini,
+display_errors => STDOUT => STDOUT
+error_reporting => no value => no value
+expose_php => On => On
+max_execution_time => 0 => 0
+memory_limit => 128M => 128M
+post_max_size => 8M => 8M
+upload_max_filesize => 2M => 2M
+zend.assertions => 1 => 1
+cURL Information => 8.22.0
+libxml Version => 2.13.9
+OpenSSL Library Version => OpenSSL 3.5.9 29 Sep 2026
+PCRE Library Version => 10.40 2022-04-14
+SQLite Library => 3.53.4
+session.upload_progress.enabled => On => On
+SQLite Library => 3.53.4
+libxml2 Version => 2.13.9

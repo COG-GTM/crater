@@ -1,0 +1,9 @@
+#!/bin/bash
+L=$1 PORT=$2
+X="docker exec -u 0 $L-app"
+echo "== [$L] create invoice via factory + render PDF (DomPDF)"
+$X php artisan tinker --execute='$c=\Crater\Models\Customer::factory()->create(["company_id"=>1]); $i=\Crater\Models\Invoice::factory()->create(["company_id"=>1,"customer_id"=>$c->id]); \Crater\Models\InvoiceItem::factory()->create(["invoice_id"=>$i->id,"company_id"=>1]); echo $i->unique_hash;' 2>&1 | tail -2 > /tmp/$L.hash
+H=$(tail -c 80 /tmp/$L.hash | grep -oE '[A-Za-z0-9]{20,}' | tail -1); echo "hash=$H"
+curl -s -b /tmp/$L.cookies -c /tmp/$L.cookies -o /tmp/$L.pdf -w 'GET /invoices/pdf/<hash> -> %{http_code} %{content_type} %{size_download}B\n' http://localhost:$PORT/invoices/pdf/$H
+head -c 5 /tmp/$L.pdf; echo; grep -ciE 'deprecated|fatal' /tmp/$L.pdf
+$X sh -c 'grep -ciE "deprecat|fatal|production.ERROR" storage/logs/laravel.log 2>/dev/null || echo 0'
