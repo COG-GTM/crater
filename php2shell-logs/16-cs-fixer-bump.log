@@ -1,0 +1,16 @@
+  - Removing php-cs-fixer/diff (v2.0.2)
+  - Upgrading friendsofphp/php-cs-fixer (v3.8.0 => v3.13.2)
+Installing dependencies from lock file (including require-dev)
+  - Removing php-cs-fixer/diff (v2.0.2)
+  - Upgrading friendsofphp/php-cs-fixer (v3.8.0 => v3.13.2): Extracting archive
+PHP needs to be a minimum version of PHP 7.4.0 and maximum version of PHP 8.1.*.
+Current PHP version: 8.2.35.
+To ignore this requirement please set `PHP_CS_FIXER_IGNORE_ENV`.
+If you use PHP version higher than supported, you may experience code modified in a wrong way.
+Please report such cases at https://github.com/PHP-CS-Fixer/PHP-CS-Fixer .
+PHP needs to be a minimum version of PHP 7.4.0 and maximum version of PHP 8.1.*.
+Current PHP version: 8.2.35.
+To ignore this requirement please set `PHP_CS_FIXER_IGNORE_ENV`.
+If you use PHP version higher than supported, you may experience code modified in a wrong way.
+Please report such cases at https://github.com/PHP-CS-Fixer/PHP-CS-Fixer .
+CSFIX_EXIT=0

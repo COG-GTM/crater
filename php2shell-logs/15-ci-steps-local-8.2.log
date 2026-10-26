@@ -1,0 +1,31 @@
+PHP 8.2.35 (cli) (built: Oct 21 2026 16:03:01) (NTS)
+PHP version 8.2.35 (/usr/local/bin/php)
+Run the "diagnose" command to get more detailed diagnostics output.
+Composer version 2.10.3 2026-08-27 13:34:23
+Discovered Package: [32mspatie/laravel-backup[39m
+Discovered Package: [32mspatie/laravel-medialibrary[39m
+Discovered Package: [32mvinkla/hashids[39m
+[32mPackage manifest generated successfully.[39m
+109 packages you are using are looking for funding.
+Use the `composer fund` command to find out more!
+INSTALL_EXIT=0
+PHP needs to be a minimum version of PHP 7.4.0 and maximum version of PHP 8.1.*.
+Current PHP version: 8.2.35.
+To ignore this requirement please set `PHP_CS_FIXER_IGNORE_ENV`.
+If you use PHP version higher than supported, you may experience code modified in a wrong way.
+Please report such cases at https://github.com/FriendsOfPHP/PHP-CS-Fixer .
+
+  [37;1mTests:  [39;22m[32;1m248 passed[39;22m
+  [37;1mTime:   [39;22m[39m35.39s[39m
+
+PHP needs to be a minimum version of PHP 7.4.0 and maximum version of PHP 8.1.*.
+Current PHP version: 8.2.35.
+To ignore this requirement please set `PHP_CS_FIXER_IGNORE_ENV`.
+If you use PHP version higher than supported, you may experience code modified in a wrong way.
+Please report such cases at https://github.com/FriendsOfPHP/PHP-CS-Fixer .
+CSFIX_EXIT=8
+   3) /app/app/Http/Controllers/V1/Admin/Report/TaxSummaryReportController.php (ordered_imports)
+   4) /app/app/Http/Controllers/V1/Admin/Report/ExpensesReportController.php (ordered_imports)
+   5) /app/app/Http/Controllers/V1/Admin/Report/ProfitLossReportController.php (ordered_imports)
+
+Checked all files in 4.391 seconds, 36.000 MB memory used
