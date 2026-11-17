@@ -345,6 +345,7 @@ function hasAtleastOneAbility() {
 
 async function clearStatusSearch(removedOption, id) {
   filters.status = ''
+  activeTab.value = t('general.all')
   refreshTable({ resetPage: true })
 }
 
