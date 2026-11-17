@@ -35,3 +35,19 @@ jobs:
 
     - name: Unit Tests
       run: php ./vendor/bin/pest
+
+  js-unit:
+    runs-on: ubuntu-latest
+    name: JS unit tests
+
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v2
+
+    - name: Setup Node
+      uses: actions/setup-node@v3
+      with:
+        node-version: 20
+
+    - name: Unit Tests
+      run: npm run test:unit

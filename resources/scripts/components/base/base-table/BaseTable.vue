@@ -147,6 +147,7 @@ import { computed, onMounted, watch, ref, reactive } from 'vue'
 import { get } from 'lodash'
 import Row from './Row'
 import Column from './Column'
+import { pageToFetch } from './helpers'
 import BaseTablePagination from './BaseTablePagination.vue'
 import SpinnerIcon from '@/scripts/components/icons/SpinnerIcon.vue'
 
@@ -284,8 +285,8 @@ function prepareLocalData() {
   return props.data
 }
 
-async function fetchServerData() {
-  const page = (pagination.value && pagination.value.currentPage) || 1
+async function fetchServerData(options) {
+  const page = pageToFetch(pagination.value, options)
 
   isLoading.value = true
 
@@ -313,10 +314,10 @@ function changeSorting(column) {
   }
 }
 
-async function mapDataToRows() {
+async function mapDataToRows(options = {}) {
   const data = usesLocalData.value
     ? prepareLocalData()
-    : await fetchServerData()
+    : await fetchServerData(options)
 
   rows.value = data.map((rowData) => new Row(rowData, tableColumns))
 }
@@ -326,8 +327,8 @@ async function pageChange(page) {
   await mapDataToRows()
 }
 
-async function refresh() {
-  await mapDataToRows()
+async function refresh(options = {}) {
+  await mapDataToRows(options)
 }
 
 function lodashGet(array, key) {

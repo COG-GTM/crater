@@ -28,3 +28,11 @@ export function pick(object, properties) {
 export function range(from, to) {
   return [...Array(to - from)].map((_, i) => i + from);
 }
+
+export function pageToFetch(pagination, { resetPage = false } = {}) {
+  if (resetPage || !pagination || !pagination.currentPage) {
+    return 1;
+  }
+
+  return pagination.currentPage;
+}
