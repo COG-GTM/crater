@@ -291,7 +291,7 @@ function refreshTable() {
 }
 
 function setFilters() {
-  refreshTable()
+  tableComponent.value.refresh({ resetPage: true })
 }
 
 function hasAtleastOneAbility() {
