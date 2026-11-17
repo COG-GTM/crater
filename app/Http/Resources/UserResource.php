@@ -2,10 +2,13 @@
 
 namespace Crater\Http\Resources;
 
+use Crater\Http\Resources\Concerns\ChecksRelations;
 use Illuminate\Http\Resources\Json\JsonResource;
 
 class UserResource extends JsonResource
 {
+    use ChecksRelations;
+
     /**
      * Transform the resource into an array.
      *
@@ -34,10 +37,10 @@ class UserResource extends JsonResource
             'is_owner' => $this->isOwner(),
             'roles' => $this->roles,
             'formatted_created_at' => $this->formattedCreatedAt,
-            'currency' => $this->when($this->currency()->exists(), function () {
+            'currency' => $this->when($this->hasRelated('currency'), function () {
                 return new CurrencyResource($this->currency);
             }),
-            'companies' => $this->when($this->companies()->exists(), function () {
+            'companies' => $this->when($this->hasRelated('companies'), function () {
                 return CompanyResource::collection($this->companies);
             })
         ];
