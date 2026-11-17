@@ -1,5 +1,6 @@
 import { defineConfig } from 'laravel-vite'
 import vue from '@vitejs/plugin-vue'
+import { splitVendorChunkPlugin } from 'vite'
 
 export default defineConfig({
     server: {
@@ -13,5 +14,6 @@ export default defineConfig({
         }
     }
 }).withPlugins(
-    vue
+    vue,
+    splitVendorChunkPlugin
 )
