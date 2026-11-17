@@ -2,10 +2,13 @@
 
 namespace Crater\Http\Resources;
 
+use Crater\Http\Resources\Concerns\ChecksRelations;
 use Illuminate\Http\Resources\Json\JsonResource;
 
 class InvoiceResource extends JsonResource
 {
+    use ChecksRelations;
+
     /**
      * Transform the resource into an array.
      *
@@ -56,25 +59,25 @@ class InvoiceResource extends JsonResource
             'sales_tax_type' => $this->sales_tax_type,
             'sales_tax_address_type' => $this->sales_tax_address_type,
             'overdue' => $this->overdue,
-            'items' => $this->when($this->items()->exists(), function () {
+            'items' => $this->when($this->hasRelated('items'), function () {
                 return InvoiceItemResource::collection($this->items);
             }),
-            'customer' => $this->when($this->customer()->exists(), function () {
+            'customer' => $this->when($this->hasRelated('customer'), function () {
                 return new CustomerResource($this->customer);
             }),
-            'creator' => $this->when($this->creator()->exists(), function () {
+            'creator' => $this->when($this->hasRelated('creator'), function () {
                 return new UserResource($this->creator);
             }),
-            'taxes' => $this->when($this->taxes()->exists(), function () {
+            'taxes' => $this->when($this->hasRelated('taxes'), function () {
                 return TaxResource::collection($this->taxes);
             }),
-            'fields' => $this->when($this->fields()->exists(), function () {
+            'fields' => $this->when($this->hasRelated('fields'), function () {
                 return CustomFieldValueResource::collection($this->fields);
             }),
-            'company' => $this->when($this->company()->exists(), function () {
+            'company' => $this->when($this->hasRelated('company'), function () {
                 return new CompanyResource($this->company);
             }),
-            'currency' => $this->when($this->currency()->exists(), function () {
+            'currency' => $this->when($this->hasRelated('currency'), function () {
                 return new CurrencyResource($this->currency);
             }),
         ];

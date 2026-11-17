@@ -2,10 +2,13 @@
 
 namespace Crater\Http\Resources;
 
+use Crater\Http\Resources\Concerns\ChecksRelations;
 use Illuminate\Http\Resources\Json\JsonResource;
 
 class InvoiceItemResource extends JsonResource
 {
+    use ChecksRelations;
+
     /**
      * Transform the resource into an array.
      *
@@ -35,10 +38,10 @@ class InvoiceItemResource extends JsonResource
             'base_tax' => $this->base_tax,
             'base_total' => $this->base_total,
             'recurring_invoice_id' => $this->recurring_invoice_id,
-            'taxes' => $this->when($this->taxes()->exists(), function () {
+            'taxes' => $this->when($this->hasRelated('taxes'), function () {
                 return TaxResource::collection($this->taxes);
             }),
-            'fields' => $this->when($this->fields()->exists(), function () {
+            'fields' => $this->when($this->hasRelated('fields'), function () {
                 return CustomFieldValueResource::collection($this->fields);
             }),
         ];

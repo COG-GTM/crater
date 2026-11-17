@@ -2,10 +2,13 @@
 
 namespace Crater\Http\Resources;
 
+use Crater\Http\Resources\Concerns\ChecksRelations;
 use Illuminate\Http\Resources\Json\JsonResource;
 
 class AddressResource extends JsonResource
 {
+    use ChecksRelations;
+
     /**
      * Transform the resource into an array.
      *
@@ -29,10 +32,10 @@ class AddressResource extends JsonResource
             'user_id' => $this->user_id,
             'company_id' => $this->company_id,
             'customer_id' => $this->customer_id,
-            'country' => $this->when($this->country()->exists(), function () {
+            'country' => $this->when($this->hasRelated('country'), function () {
                 return new CountryResource($this->country);
             }),
-            'user' => $this->when($this->user()->exists(), function () {
+            'user' => $this->when($this->hasRelated('user'), function () {
                 return new UserResource($this->user);
             }),
         ];

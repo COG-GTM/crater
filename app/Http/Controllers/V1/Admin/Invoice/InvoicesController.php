@@ -23,7 +23,27 @@ class InvoicesController extends Controller
 
         $limit = $request->has('limit') ? $request->limit : 10;
 
-        $invoices = Invoice::whereCompany()
+        $invoices = Invoice::with([
+                'items.taxes',
+                'items.fields',
+                'customer.billingAddress.country',
+                'customer.billingAddress.user',
+                'customer.shippingAddress.country',
+                'customer.shippingAddress.user',
+                'customer.fields',
+                'customer.company.address.country',
+                'customer.company.address.user',
+                'customer.currency',
+                'creator.currency',
+                'creator.companies.address.country',
+                'creator.companies.address.user',
+                'taxes',
+                'fields',
+                'company.address.country',
+                'company.address.user',
+                'currency',
+            ])
+            ->whereCompany()
             ->join('customers', 'customers.id', '=', 'invoices.customer_id')
             ->applyFilters($request->all())
             ->select('invoices.*', 'customers.name')

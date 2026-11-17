@@ -23,7 +23,17 @@ class CustomersController extends Controller
 
         $limit = $request->has('limit') ? $request->limit : 10;
 
-        $customers = Customer::with('creator')
+        $customers = Customer::with([
+                'creator',
+                'billingAddress.country',
+                'billingAddress.user',
+                'shippingAddress.country',
+                'shippingAddress.user',
+                'fields',
+                'company.address.country',
+                'company.address.user',
+                'currency',
+            ])
             ->whereCompany()
             ->applyFilters($request->all())
             ->select(
