@@ -387,11 +387,11 @@ function hasAtleastOneAbility() {
 
 async function clearStatusSearch(removedOption, id) {
   filters.status = ''
-  refreshTable()
+  refreshTable({ resetPage: true })
 }
 
-function refreshTable() {
-  table.value && table.value.refresh()
+function refreshTable(options = {}) {
+  table.value && table.value.refresh(options)
 }
 
 async function fetchData({ page, filter, sort }) {
@@ -454,7 +454,7 @@ function setFilters() {
     state.selectAllField = false
   })
 
-  refreshTable()
+  refreshTable({ resetPage: true })
 }
 
 function clearFilter() {
