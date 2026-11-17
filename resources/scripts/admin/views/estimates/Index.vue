@@ -272,10 +272,12 @@ const status = ref([
 
 const isRequestOngoing = ref(true)
 const activeTab = ref('general.draft')
-const statusTabs = computed(() => [t('general.all'), t('general.draft'), t('general.sent')])
-const activeTabIndex = computed(() =>
-  statusTabs.value.indexOf(activeTab.value)
-)
+const statusTabs = computed(() => [
+  t('general.all'),
+  t('general.draft'),
+  t('general.sent'),
+])
+const activeTabIndex = computed(() => statusTabs.value.indexOf(activeTab.value))
 const router = useRouter()
 
 let filters = reactive({
