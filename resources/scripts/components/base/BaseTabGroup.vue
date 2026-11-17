@@ -1,6 +1,10 @@
 <template>
   <div>
-    <TabGroup :default-index="defaultIndex" @change="onChange">
+    <TabGroup
+      :key="tabGroupKey"
+      :default-index="currentIndex"
+      @change="onChange"
+    >
       <TabList
         :class="[
           'flex border-b border-grey-light',
@@ -46,7 +50,7 @@
 </template>
 
 <script setup>
-import { computed, useSlots } from 'vue'
+import { computed, ref, useSlots, watch } from 'vue'
 import { TabGroup, TabList, Tab, TabPanels } from '@headlessui/vue'
 
 const props = defineProps({
@@ -58,6 +62,10 @@ const props = defineProps({
     type: String,
     default: null,
   },
+  selectedIndex: {
+    type: Number,
+    default: null,
+  },
 })
 
 const emit = defineEmits(['change'])
@@ -66,7 +74,25 @@ const slots = useSlots()
 
 const tabs = computed(() => slots.default().map((tab) => tab.props))
 
+const currentIndex = ref(props.selectedIndex ?? props.defaultIndex)
+const tabGroupKey = ref(0)
+
+// headlessui's TabGroup only reads its index on mount, so remount it when the
+// parent selects a different tab (e.g. from a filter outside the tab bar).
+watch(
+  () => props.selectedIndex,
+  (index) => {
+    if (index === null || index < 0 || index === currentIndex.value) {
+      return
+    }
+
+    currentIndex.value = index
+    tabGroupKey.value++
+  }
+)
+
 function onChange(d) {
+  currentIndex.value = d
   emit('change', tabs.value[d])
 }
 </script>

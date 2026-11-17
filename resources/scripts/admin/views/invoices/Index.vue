@@ -130,7 +130,11 @@
         "
       >
         <!-- Tabs -->
-        <BaseTabGroup class="-mb-5" @change="setStatusFilter">
+        <BaseTabGroup
+          class="-mb-5"
+          :selected-index="activeTabIndex"
+          @change="setStatusFilter"
+        >
           <BaseTab :title="$t('general.all')" filter="" />
           <BaseTab :title="$t('general.draft')" filter="DRAFT" />
           <BaseTab :title="$t('general.sent')" filter="SENT" />
@@ -302,6 +306,10 @@ const status = ref([
 ])
 const isRequestOngoing = ref(true)
 const activeTab = ref('general.draft')
+const statusTabs = computed(() => [t('general.all'), t('general.draft'), t('general.sent'), t('general.due')])
+const activeTabIndex = computed(() =>
+  statusTabs.value.indexOf(activeTab.value)
+)
 const router = useRouter()
 const userStore = useUserStore()
 
