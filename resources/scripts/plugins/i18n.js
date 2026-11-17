@@ -4,6 +4,7 @@ export default (messages) => {
   return createI18n({
     locale: 'en',
     fallbackLocale: 'en',
+    allowComposition: true,
     messages
   })
 }

@@ -42,6 +42,7 @@ export default class Crater {
       locale: 'en',
       fallbackLocale: 'en',
       globalInjection: true,
+      allowComposition: true,
       messages: this.messages,
     })
 
