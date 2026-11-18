@@ -28,12 +28,8 @@ class DashboardController extends Controller
 
         $this->authorize('view dashboard', $company);
 
-        $invoice_totals = [];
-        $expense_totals = [];
-        $receipt_totals = [];
         $net_income_totals = [];
 
-        $i = 0;
         $months = [];
         $monthCounter = 0;
         $fiscalYear = CompanySetting::getSetting('fiscal_year', $request->header('company'));
@@ -58,39 +54,10 @@ class DashboardController extends Controller
             $end->subYear()->endOfMonth();
         }
 
+        $monthRanges = [];
+
         while ($monthCounter < 12) {
-            array_push(
-                $invoice_totals,
-                Invoice::whereBetween(
-                    'invoice_date',
-                    [$start->format('Y-m-d'), $end->format('Y-m-d')]
-                )
-                ->whereCompany()
-                ->sum('base_total')
-            );
-            array_push(
-                $expense_totals,
-                Expense::whereBetween(
-                    'expense_date',
-                    [$start->format('Y-m-d'), $end->format('Y-m-d')]
-                )
-                ->whereCompany()
-                ->sum('base_amount')
-            );
-            array_push(
-                $receipt_totals,
-                Payment::whereBetween(
-                    'payment_date',
-                    [$start->format('Y-m-d'), $end->format('Y-m-d')]
-                )
-                ->whereCompany()
-                ->sum('base_amount')
-            );
-            array_push(
-                $net_income_totals,
-                ($receipt_totals[$i] - $expense_totals[$i])
-            );
-            $i++;
+            $monthRanges[] = [$start->format('Y-m-d'), $end->format('Y-m-d')];
             array_push($months, $start->format('M'));
             $monthCounter++;
             $end->startOfMonth();
@@ -100,26 +67,36 @@ class DashboardController extends Controller
 
         $start->subMonth()->endOfMonth();
 
-        $total_sales = Invoice::whereBetween(
+        $range = [$startDate->format('Y-m-d'), $start->format('Y-m-d')];
+
+        [$invoice_totals, $total_sales] = $this->monthlySums(
+            Invoice::whereCompany(),
             'invoice_date',
-            [$startDate->format('Y-m-d'), $start->format('Y-m-d')]
-        )
-            ->whereCompany()
-            ->sum('base_total');
-
-        $total_receipts = Payment::whereBetween(
-            'payment_date',
-            [$startDate->format('Y-m-d'), $start->format('Y-m-d')]
-        )
-            ->whereCompany()
-            ->sum('base_amount');
-
-        $total_expenses = Expense::whereBetween(
+            'base_total',
+            $monthRanges,
+            $range
+        );
+        [$expense_totals, $total_expenses] = $this->monthlySums(
+            Expense::whereCompany(),
             'expense_date',
-            [$startDate->format('Y-m-d'), $start->format('Y-m-d')]
-        )
-            ->whereCompany()
-            ->sum('base_amount');
+            'base_amount',
+            $monthRanges,
+            $range
+        );
+        [$receipt_totals, $total_receipts] = $this->monthlySums(
+            Payment::whereCompany(),
+            'payment_date',
+            'base_amount',
+            $monthRanges,
+            $range
+        );
+
+        foreach ($monthRanges as $i => $monthRange) {
+            array_push(
+                $net_income_totals,
+                ($receipt_totals[$i] - $expense_totals[$i])
+            );
+        }
 
         $total_net_income = (int)$total_receipts - (int)$total_expenses;
 
@@ -162,5 +139,35 @@ class DashboardController extends Controller
             'total_expenses' => $total_expenses,
             'total_net_income' => $total_net_income,
         ]);
+    }
+
+    /**
+     * Sum a column per month and over the whole range in a single query,
+     * matching what a separate whereBetween()->sum() per range returns.
+     */
+    private function monthlySums($query, string $dateColumn, string $sumColumn, array $monthRanges, array $range): array
+    {
+        $selects = [];
+        $bindings = [];
+
+        foreach ($monthRanges as $i => $monthRange) {
+            $selects[] = "SUM(CASE WHEN {$dateColumn} BETWEEN ? AND ? THEN {$sumColumn} END) AS month_{$i}";
+            array_push($bindings, ...$monthRange);
+        }
+
+        $selects[] = "SUM({$sumColumn}) AS range_total";
+
+        $row = $query->toBase()
+            ->whereBetween($dateColumn, $range)
+            ->selectRaw(implode(', ', $selects), $bindings)
+            ->first();
+
+        $totals = [];
+
+        foreach ($monthRanges as $i => $monthRange) {
+            $totals[] = $row->{"month_{$i}"} ?: 0;
+        }
+
+        return [$totals, $row->range_total ?: 0];
     }
 }
