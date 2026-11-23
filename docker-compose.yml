@@ -36,7 +36,7 @@ services:
       - crater
 
   nginx:
-    image: nginx:1.17-alpine
+    image: nginx:1.30.8-alpine
     restart: unless-stopped
     ports:
       - 80:80
