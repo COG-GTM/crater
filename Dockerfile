@@ -15,7 +15,15 @@ RUN apt-get update && apt-get install -y \
     unzip \
     libzip-dev \
     libmagickwand-dev \
+    ghostscript \
     mariadb-client
+
+# Upload2Shell (CVE-2026-125396, DSA-6516-1): fail the build if Ghostscript is older than the patched Debian build
+RUN for pkg in ghostscript libgs10; do \
+        v="$(dpkg-query -W -f='${Version}' "$pkg" 2>/dev/null)"; \
+        dpkg --compare-versions "$v" ge '10.05.1~dfsg-1+deb13u2' \
+            || { echo "$pkg '$v' is vulnerable to CVE-2026-125396; need >= 10.05.1~dfsg-1+deb13u2" >&2; exit 1; }; \
+    done
 
 # Clear cache
 RUN apt-get clean && rm -rf /var/lib/apt/lists/*
