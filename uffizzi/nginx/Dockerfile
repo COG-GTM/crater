@@ -1,7 +1,7 @@
 ARG BASE_IMAGE
 
 FROM $BASE_IMAGE as build
-FROM nginx:1.17-alpine
+FROM nginx:1.30.8-alpine
 
 RUN rm /etc/nginx/conf.d/default.conf
 

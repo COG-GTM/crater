@@ -35,3 +35,15 @@ jobs:
 
     - name: Unit Tests
       run: php ./vendor/bin/pest
+
+  nginx-version:
+    runs-on: ubuntu-latest
+
+    name: nginx version
+
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v2
+
+    - name: Check nginx images are patched
+      run: ./.github/scripts/check-nginx-version.sh
